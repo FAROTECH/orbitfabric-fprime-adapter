@@ -1,34 +1,16 @@
-# OrbitFabric Adapter Developer Template
+# OrbitFabric F Prime Adapter
 
-This documentation is for developers building an OrbitFabric adapter.
+The OrbitFabric F Prime Adapter projects OrbitFabric mission contracts toward native F Prime (F´) FPP artifacts through explicit target bindings.
 
-The Template is executable. The included Dummy Adapter builds, runs, emits Core-conformant Integration Results, installs through Adapter Manager, proves exact Project Lock state and demonstrates an Integration Coverage Matrix.
+The project is currently at `0.1.0.dev0`. Product identity, packaging and managed lifecycle are established; target projection semantics and native F Prime compatibility acceptance are introduced in subsequent productization gates.
 
-OrbitFabric Core remains authoritative for generic integration contracts. The Template explains how to consume those contracts correctly inside a maintainable adapter repository.
+## Design principle
 
-## Recommended path
+A downstream F Prime project remains a F Prime project.
 
-```text
-Getting Started
-    -> Repository Anatomy
-    -> Adapter Identity
-    -> Architecture and Ownership
-    -> Integration Contracts
-    -> Projection Profile and Bindings
-    -> Testing and Conformance
-    -> Evidence and Traceability
-    -> Runtime Dependencies
-    -> Release Lifecycle
-    -> Integration Coverage
-    -> Adapter Readiness Checklist
-```
+OrbitFabric does not own its components, topology, scheduling or runtime architecture. The adapter bridges stable mission-level contract identity to explicitly authored F Prime placement and lets the F Prime toolchain remain authoritative for native resolution and execution.
 
-If you are extracting an adapter from an existing experiment, read [Migrating from a PoC](migrating-from-poc.md) after the main developer path.
+Continue with:
 
-## One rule to remember
-
-```text
-Core defines what is valid.
-The Template demonstrates how to build it well.
-The adapter owns target-specific projection and evidence.
-```
+- [Architecture and ownership](architecture-and-ownership.md)
+- [Development and verification](development.md)

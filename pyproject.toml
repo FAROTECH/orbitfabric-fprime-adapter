@@ -3,20 +3,21 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "orbitfabric-dummy-adapter"
+name = "orbitfabric-fprime-adapter"
 version = "0.1.0.dev0"
-description = "Executable dummy adapter shipped with the OrbitFabric Adapter Developer Template."
+description = "OrbitFabric adapter for projecting mission contracts into F Prime (F´) FPP artifacts with explicit target bindings and downstream-native validation."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [
   { name = "OrbitFabric Contributors" }
 ]
-dependencies = [
-  "PyYAML>=6.0",
-  "jsonschema>=4.23",
-  "rfc8785>=0.1.4"
-]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/FAROTECH/orbitfabric-fprime-adapter"
+Repository = "https://github.com/FAROTECH/orbitfabric-fprime-adapter"
+Issues = "https://github.com/FAROTECH/orbitfabric-fprime-adapter/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -27,10 +28,10 @@ dev = [
 ]
 
 [project.scripts]
-orbitfabric-dummy-adapter = "orbitfabric_dummy_adapter.cli:main"
+orbitfabric-fprime = "orbitfabric_fprime_adapter.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/orbitfabric_dummy_adapter"]
+packages = ["src/orbitfabric_fprime_adapter"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
