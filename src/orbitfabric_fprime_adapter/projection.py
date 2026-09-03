@@ -29,7 +29,14 @@ EVENT_SEVERITY_FPP = {
 }
 
 UNREPRESENTED_FIELDS = {
-    "telemetry": ("unit", "sampling", "criticality", "persistence", "downlink_priority", "quality"),
+    "telemetry": (
+        "unit",
+        "sampling",
+        "criticality",
+        "persistence",
+        "downlink_priority",
+        "quality",
+    ),
     "commands": (
         "allowed_modes",
         "preconditions",
@@ -71,10 +78,11 @@ def _entity_map(model: dict[str, Any], domain: str) -> dict[str, dict[str, Any]]
     items = model.get(domain)
     if not isinstance(items, list):
         raise ProjectionError(f"model.{domain} must be an array")
+
     result: dict[str, dict[str, Any]] = {}
     for item in items:
         if not isinstance(item, dict) or not isinstance(item.get("id"), str):
-            raise ProjectionError(f"model.{domain} entries must be objects with string ids")
+            raise ProjectionError(f"model.{domain} entries must have string ids")
         entity_id = item["id"]
         if entity_id in result:
             raise ProjectionError(f"duplicate source entity in {domain}: {entity_id}")
@@ -86,13 +94,17 @@ def _source(binding: dict[str, Any]) -> tuple[str, str]:
     sources = binding.get("sources")
     if not isinstance(sources, list) or len(sources) != 1:
         raise ProjectionError(f"binding {binding.get('id')}: exactly one source is required")
+
     source = sources[0]
     if not isinstance(source, dict):
         raise ProjectionError(f"binding {binding.get('id')}: source must be an object")
+
     domain = source.get("domain")
     entity_id = source.get("id")
     if not isinstance(domain, str) or not isinstance(entity_id, str):
-        raise ProjectionError(f"binding {binding.get('id')}: source domain and id must be strings")
+        raise ProjectionError(
+            f"binding {binding.get('id')}: source domain and id must be strings"
+        )
     return domain, entity_id
 
 
@@ -105,12 +117,12 @@ def _fpp_type(source_type: Any) -> str:
         raise ProjectionError(f"unsupported OrbitFabric type: {source_type!r}") from exc
 
 
-def _annotation(text: Any) -> str:
-    return " ".join(str(text).replace("\r", " ").replace("\n", " ").split())
+def _annotation(value: Any) -> str:
+    return " ".join(str(value).replace("\r", " ").replace("\n", " ").split())
 
 
-def _quote(text: Any) -> str:
-    return str(text).replace("\\", "\\\\").replace('"', '\\"')
+def _quote(value: Any) -> str:
+    return str(value).replace("\\", "\\\\").replace('"', '\\"')
 
 
 def _format_number(value: Any) -> str:
@@ -147,8 +159,11 @@ def _render_limits(item: dict[str, Any], settings: dict[str, Any]) -> list[str]:
                 )
             seen_colors.add(color)
             entries.append((color, value))
+
         if entries:
-            body = ", ".join(f"{color} {_format_number(value)}" for color, value in entries)
+            body = ", ".join(
+                f"{color} {_format_number(value)}" for color, value in entries
+            )
             rendered.append(f"  {side} {{ {body} }}")
     return rendered
 
@@ -162,6 +177,7 @@ def _render_telemetry(
         f"telemetry {config['symbol']}: {_fpp_type(item.get('type'))} \\",
         f"  id {config['local_id']} \\",
     ]
+
     limit_lines = _render_limits(item, settings)
     if not limit_lines:
         lines.append(f"  update {update}")
@@ -190,17 +206,22 @@ def _render_command(item: dict[str, Any], config: dict[str, Any]) -> str:
         if name in seen_names:
             raise ProjectionError(f"command {item['id']}: duplicate argument name {name}")
         seen_names.add(name)
-        description = _annotation(argument.get("description") or f"OrbitFabric argument {name}")
-        parameters.append(f"  {name}: {_fpp_type(argument.get('type'))} @< {description}")
+
+        description = _annotation(
+            argument.get("description") or f"OrbitFabric argument {name}"
+        )
+        fpp_type = _fpp_type(argument.get("type"))
+        parameters.append(f"  {name}: {fpp_type} @< {description}")
 
     head = f"{config['command_kind']} command {config['symbol']}"
     if parameters:
         head += "(\n" + "\n".join(parameters) + "\n)"
+
     line = head + f" opcode {config['local_opcode']}"
     if config["command_kind"] == "async":
         if "priority" not in config or "queue_full_behavior" not in config:
             raise ProjectionError(
-                f"async command {item['id']}: priority and queue_full_behavior are required"
+                f"async command {item['id']}: priority and queue policy are required"
             )
         line += f" priority {config['priority']} {config['queue_full_behavior']}"
     return "\n".join([f"@ OrbitFabric command: {item['id']}", line])
@@ -210,7 +231,9 @@ def _render_event(item: dict[str, Any], config: dict[str, Any]) -> str:
     try:
         severity = EVENT_SEVERITY_FPP[config["severity"]]
     except KeyError as exc:
-        raise ProjectionError(f"unsupported FPP event severity: {config.get('severity')!r}") from exc
+        value = config.get("severity")
+        raise ProjectionError(f"unsupported FPP event severity: {value!r}") from exc
+
     description = _annotation(item.get("description") or item["id"])
     return "\n".join(
         [
@@ -223,12 +246,26 @@ def _render_event(item: dict[str, Any], config: dict[str, Any]) -> str:
     )
 
 
-def _present_unrepresented_fields(domain: str, item: dict[str, Any]) -> list[str]:
+def _unrepresented(domain: str, item: dict[str, Any]) -> list[str]:
     return [field for field in UNREPRESENTED_FIELDS[domain] if field in item]
 
 
+def _diagnostics(
+    domain: str, entity_id: str, fields: list[str]
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "severity": "info",
+            "code": "OF_FPRIME_FIELD_NOT_PROJECTED",
+            "source": {"domain": domain, "id": entity_id},
+            "field": field,
+        }
+        for field in fields
+    ]
+
+
 def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> ProjectionResult:
-    """Build all FPP artifacts in memory and fail before writing on any invalid projection."""
+    """Build all FPP artifacts in memory before any output is written."""
 
     by_domain = {
         domain: _entity_map(model, domain)
@@ -248,10 +285,10 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
     mappings: list[dict[str, Any]] = []
     diagnostics: list[dict[str, Any]] = []
     packet_bindings: list[tuple[dict[str, Any], dict[str, Any]]] = []
-    used_binding_ids: set[str] = set()
-    used_sources: set[tuple[str, str]] = set()
-    used_symbols: set[tuple[str, str]] = set()
-    used_allocations: set[tuple[str, str, int]] = set()
+    binding_ids: set[str] = set()
+    projected_sources: set[tuple[str, str]] = set()
+    symbols: set[tuple[str, str]] = set()
+    allocations: set[tuple[str, str, int]] = set()
 
     for binding in bindings:
         if not isinstance(binding, dict):
@@ -259,19 +296,20 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
         binding_id = binding.get("id")
         if not isinstance(binding_id, str) or not binding_id:
             raise ProjectionError("profile binding id must be a non-empty string")
-        if binding_id in used_binding_ids:
+        if binding_id in binding_ids:
             raise ProjectionError(f"duplicate binding id: {binding_id}")
-        used_binding_ids.add(binding_id)
+        binding_ids.add(binding_id)
 
         domain, source_id = _source(binding)
         source_key = (domain, source_id)
-        if source_key in used_sources:
-            raise ProjectionError(f"source is projected more than once: {domain}:{source_id}")
-        used_sources.add(source_key)
+        if source_key in projected_sources:
+            raise ProjectionError(f"source projected more than once: {domain}:{source_id}")
+        projected_sources.add(source_key)
 
         source = by_domain.get(domain, {}).get(source_id)
         if source is None:
             raise ProjectionError(f"source is not present in model: {domain}:{source_id}")
+
         config = binding.get("config")
         if not isinstance(config, dict):
             raise ProjectionError(f"binding {binding_id}: config must be an object")
@@ -279,7 +317,9 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
 
         if kind == "packet":
             if domain != "packets":
-                raise ProjectionError(f"binding {binding_id}: packet config requires packets source")
+                raise ProjectionError(
+                    f"binding {binding_id}: packet config requires packets source"
+                )
             packet_bindings.append((binding, source))
             continue
 
@@ -289,25 +329,26 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
             "event": "events",
         }.get(kind)
         if expected_domain is None:
-            raise ProjectionError(f"binding {binding_id}: unsupported projection kind {kind!r}")
+            raise ProjectionError(f"binding {binding_id}: unsupported kind {kind!r}")
         if domain != expected_domain:
-            raise ProjectionError(f"binding {binding_id}: {kind} config cannot project {domain}")
+            raise ProjectionError(f"binding {binding_id}: {kind} cannot project {domain}")
 
         component = config["host_component"]
         symbol = config["symbol"]
         symbol_key = (component, symbol)
-        if symbol_key in used_symbols:
+        if symbol_key in symbols:
             raise ProjectionError(f"duplicate generated symbol in {component}: {symbol}")
-        used_symbols.add(symbol_key)
+        symbols.add(symbol_key)
 
         allocation_field = "local_opcode" if kind == "command" else "local_id"
         allocation_value = config[allocation_field]
         allocation_key = (component, kind, allocation_value)
-        if allocation_key in used_allocations:
+        if allocation_key in allocations:
             raise ProjectionError(
-                f"duplicate generated {kind} allocation in {component}: {allocation_value}"
+                f"duplicate generated {kind} allocation in {component}: "
+                f"{allocation_value}"
             )
-        used_allocations.add(allocation_key)
+        allocations.add(allocation_key)
 
         if kind == "telemetry":
             rendered = _render_telemetry(source, config, settings)
@@ -320,7 +361,7 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
             rendered = _render_event(source, config)
             component_fragments[component]["events"].append(rendered)
 
-        unrepresented = _present_unrepresented_fields(domain, source)
+        fields = _unrepresented(domain, source)
         mappings.append(
             {
                 "binding_id": binding_id,
@@ -332,29 +373,41 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
                     "symbol": symbol,
                     allocation_field: allocation_value,
                 },
-                "unrepresented_source_fields": unrepresented,
+                "unrepresented_source_fields": fields,
             }
         )
-        diagnostics.extend(
-            {
-                "severity": "info",
-                "code": "OF_FPRIME_FIELD_NOT_PROJECTED",
-                "source": {"domain": domain, "id": source_id},
-                "field": field,
-            }
-            for field in unrepresented
-        )
+        diagnostics.extend(_diagnostics(domain, source_id, fields))
 
-    artifacts: list[Artifact] = []
+    artifacts = _component_artifacts(component_fragments)
+    packet_artifacts, packet_mappings, packet_diagnostics = _project_packets(
+        packet_bindings,
+        telemetry_targets,
+    )
+    artifacts.extend(packet_artifacts)
+    mappings.extend(packet_mappings)
+    diagnostics.extend(packet_diagnostics)
+
+    return ProjectionResult(
+        artifacts=tuple(artifacts),
+        mappings=tuple(mappings),
+        diagnostics=tuple(diagnostics),
+    )
+
+
+def _component_artifacts(
+    fragments: dict[str, dict[str, list[str]]],
+) -> list[Artifact]:
     filenames = {
         "commands": "OF_Commands.fppi",
         "events": "OF_Events.fppi",
         "telemetry": "OF_Telemetry.fppi",
     }
-    for component in sorted(component_fragments):
+    artifacts: list[Artifact] = []
+
+    for component in sorted(fragments):
         safe_component = component.replace(".", "_")
         for category in ("commands", "events", "telemetry"):
-            blocks = component_fragments[component].get(category)
+            blocks = fragments[component].get(category)
             if not blocks:
                 continue
             content = (
@@ -370,10 +423,19 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
                     host_component=component,
                 )
             )
+    return artifacts
 
-    packet_blocks_by_set: dict[str, list[str]] = defaultdict(list)
+
+def _project_packets(
+    packet_bindings: list[tuple[dict[str, Any], dict[str, Any]]],
+    telemetry_targets: dict[str, str],
+) -> tuple[list[Artifact], list[dict[str, Any]], list[dict[str, Any]]]:
+    blocks_by_set: dict[str, list[str]] = defaultdict(list)
     packet_ids: set[tuple[str, int]] = set()
     packet_names: set[tuple[str, str]] = set()
+    mappings: list[dict[str, Any]] = []
+    diagnostics: list[dict[str, Any]] = []
+
     for binding, packet in packet_bindings:
         config = binding["config"]
         packet_set = config["packet_set"]
@@ -381,37 +443,42 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
         name_key = (packet_set, config["packet_name"])
         if id_key in packet_ids:
             raise ProjectionError(
-                f"duplicate packet id in packet set {packet_set}: {config['packet_id']}"
+                f"duplicate packet id in {packet_set}: {config['packet_id']}"
             )
         if name_key in packet_names:
             raise ProjectionError(
-                f"duplicate packet name in packet set {packet_set}: {config['packet_name']}"
+                f"duplicate packet name in {packet_set}: {config['packet_name']}"
             )
         packet_ids.add(id_key)
         packet_names.add(name_key)
 
         members = packet.get("telemetry")
         if not isinstance(members, list) or not members:
-            raise ProjectionError(f"packet {packet['id']}: telemetry must be a non-empty array")
+            raise ProjectionError(f"packet {packet['id']}: telemetry must be non-empty")
+
         missing = [member for member in members if member not in telemetry_targets]
         if missing:
             raise ProjectionError(
-                f"packet {packet['id']}: telemetry members have no projected F Prime target: {missing}"
+                f"packet {packet['id']}: unprojected telemetry members: {missing}"
             )
         target_members = [telemetry_targets[member] for member in members]
         body = "\n".join(f"  {member}" for member in target_members)
-        packet_blocks_by_set[packet_set].append(
+        declaration = (
+            f"packet {config['packet_name']} id {config['packet_id']} "
+            f"group {config['group']} {{"
+        )
+        blocks_by_set[packet_set].append(
             "\n".join(
                 [
                     f"@ OrbitFabric packet: {packet['id']}",
-                    f"packet {config['packet_name']} id {config['packet_id']} group {config['group']} {{",
+                    declaration,
                     body,
                     "}",
                 ]
             )
         )
 
-        unrepresented = _present_unrepresented_fields("packets", packet)
+        fields = _unrepresented("packets", packet)
         mappings.append(
             {
                 "binding_id": binding["id"],
@@ -424,24 +491,17 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
                     "group": config["group"],
                     "members": target_members,
                 },
-                "unrepresented_source_fields": unrepresented,
+                "unrepresented_source_fields": fields,
             }
         )
-        diagnostics.extend(
-            {
-                "severity": "info",
-                "code": "OF_FPRIME_FIELD_NOT_PROJECTED",
-                "source": {"domain": "packets", "id": packet["id"]},
-                "field": field,
-            }
-            for field in unrepresented
-        )
+        diagnostics.extend(_diagnostics("packets", packet["id"], fields))
 
-    for packet_set in sorted(packet_blocks_by_set):
+    artifacts: list[Artifact] = []
+    for packet_set in sorted(blocks_by_set):
         content = (
             "# Include this fragment inside the project-owned telemetry packet set block.\n"
             "# Generated by orbitfabric-fprime-adapter. DO NOT EDIT.\n\n"
-            + "\n\n".join(packet_blocks_by_set[packet_set])
+            + "\n\n".join(blocks_by_set[packet_set])
             + "\n"
         )
         artifacts.append(
@@ -451,22 +511,18 @@ def build_projection(model: dict[str, Any], profile: dict[str, Any]) -> Projecti
                 content=content,
             )
         )
-
-    return ProjectionResult(
-        artifacts=tuple(artifacts),
-        mappings=tuple(mappings),
-        diagnostics=tuple(diagnostics),
-    )
+    return artifacts, mappings, diagnostics
 
 
 def write_projection(result: ProjectionResult, output_dir: Path) -> list[dict[str, Any]]:
-    """Write a fully validated projection result and return artifact metadata."""
+    """Write a validated projection result and return artifact metadata."""
 
     metadata: list[dict[str, Any]] = []
     for artifact in result.artifacts:
         path = output_dir / artifact.path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(artifact.content, encoding="utf-8")
+
         record: dict[str, Any] = {
             "role": artifact.role,
             "path": artifact.path,
