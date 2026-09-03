@@ -1,4 +1,7 @@
-fprime_version: "v4.2.2"
+fprime:
+  release: "v4.2.2"
+  commit: "8a62e455a90b6d4f498c332d45d65a2a819988d8"
+  dictionary_framework_version: "8a62e45"
 deployment_name: Ref.Ref
 entities:
   commands:
