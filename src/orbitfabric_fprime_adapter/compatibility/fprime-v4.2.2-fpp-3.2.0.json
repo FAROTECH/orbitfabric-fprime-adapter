@@ -1,0 +1,25 @@
+{
+  "kind": "orbitfabric.fprime.target_compatibility",
+  "format_version": "0.1-candidate",
+  "id": "fprime-v4.2.2-fpp-3.2.0",
+  "status": "historical_evidence_candidate",
+  "fprime": {
+    "version": "v4.2.2",
+    "commit": "8a62e455a90b6d4f498c332d45d65a2a819988d8"
+  },
+  "fpp": {
+    "version": "3.2.0",
+    "commit": "93f484b7521a8e8894cba25b26e633cc87d8e37a"
+  },
+  "evidence": {
+    "historical_poc": "accepted",
+    "canonical_source_acceptance": "pending",
+    "canonical_native_acceptance_gate": "PR5"
+  },
+  "claims": {
+    "exact_pair_only": true,
+    "version_range": false,
+    "forward_compatibility": false,
+    "backward_compatibility": false
+  }
+}

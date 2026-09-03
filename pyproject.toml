@@ -22,6 +22,7 @@ Issues = "https://github.com/FAROTECH/orbitfabric-fprime-adapter/issues"
 [project.optional-dependencies]
 dev = [
   "build>=1.2",
+  "jsonschema>=4.23",
   "mkdocs-material>=9.5",
   "pytest>=8.0",
   "ruff>=0.5"
