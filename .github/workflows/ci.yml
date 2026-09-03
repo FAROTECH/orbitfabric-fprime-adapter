@@ -87,6 +87,8 @@ jobs:
           repository: nasa/fpp
           ref: 93f484b7521a8e8894cba25b26e633cc87d8e37a
           path: _native/fpp
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
