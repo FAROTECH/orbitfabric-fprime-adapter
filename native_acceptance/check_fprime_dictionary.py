@@ -54,12 +54,19 @@ def check_dictionary(
     errors: list[str] = []
     resolutions: list[dict[str, Any]] = []
 
+    expected_fprime = expected.get("fprime")
+    if not isinstance(expected_fprime, dict):
+        raise ValueError("expectations must define an fprime mapping")
+    for key in ("release", "commit", "dictionary_framework_version"):
+        if not isinstance(expected_fprime.get(key), str):
+            raise ValueError(f"expectations fprime.{key} must be a string")
+
     metadata = dictionary.get("metadata", {})
     require_equal(
         errors,
         "metadata.frameworkVersion",
         metadata.get("frameworkVersion"),
-        expected.get("fprime_version"),
+        expected_fprime["dictionary_framework_version"],
     )
     if "deployment_name" in expected:
         require_equal(
@@ -199,6 +206,10 @@ def check_dictionary(
         "kind": "orbitfabric.fprime.dictionary_conformance",
         "version": "0.1-candidate",
         "status": "passed" if not errors else "failed",
+        "fprime_source": {
+            "release": expected_fprime["release"],
+            "commit": expected_fprime["commit"],
+        },
         "dictionary": {
             "path": str(dictionary_path),
             "sha256": hashlib.sha256(raw).hexdigest(),
