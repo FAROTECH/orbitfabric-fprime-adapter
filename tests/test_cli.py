@@ -13,8 +13,29 @@ def test_version_flag(capsys: pytest.CaptureFixture[str]) -> None:
     assert capsys.readouterr().out.strip() == "orbitfabric-fprime 0.1.0.dev0"
 
 
-def test_reserved_operation_is_not_implemented_yet(
-    capsys: pytest.CaptureFixture[str],
+def test_unknown_operation_is_rejected(
+    capsys: pytest.CaptureFixture[str], tmp_path
+) -> None:
+    status = main(
+        [
+            "run",
+            "--operation",
+            "unknown_operation",
+            "--input-set-manifest",
+            "input.json",
+            "--profile",
+            "profile.yaml",
+            "--output-dir",
+            str(tmp_path / "out"),
+        ]
+    )
+
+    assert status == 2
+    assert "unsupported operation: unknown_operation" in capsys.readouterr().err
+
+
+def test_projection_operation_rejects_additional_operation_input(
+    capsys: pytest.CaptureFixture[str], tmp_path
 ) -> None:
     status = main(
         [
@@ -26,9 +47,11 @@ def test_reserved_operation_is_not_implemented_yet(
             "--profile",
             "profile.yaml",
             "--output-dir",
-            "out",
+            str(tmp_path / "out"),
+            "--operation-input",
+            "scenario=unexpected.json",
         ]
     )
 
     assert status == 2
-    assert "not included in the initial product bootstrap baseline" in capsys.readouterr().err
+    assert "does not accept operation inputs" in capsys.readouterr().err

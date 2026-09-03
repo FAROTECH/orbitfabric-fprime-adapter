@@ -3,13 +3,44 @@
     "id": "orbitfabric-fprime",
     "version": "0.1.0.dev0"
   },
-  "capabilities": [],
+  "capabilities": [
+    "profile_validation",
+    "projection",
+    "artifact_generation",
+    "traceability"
+  ],
   "core_input_compatibility": {
     "input_set_versions": [
       "0.1-candidate"
     ],
     "relationship_families": [],
-    "surfaces": []
+    "surfaces": [
+      {
+        "role": "entity_index",
+        "kind": "orbitfabric.entity_index",
+        "format_versions": ["0.1"]
+      },
+      {
+        "role": "lint_report",
+        "kind": "orbitfabric-lint",
+        "format_versions": ["v1"]
+      },
+      {
+        "role": "mission_snapshot",
+        "kind": "orbitfabric.mission_snapshot",
+        "format_versions": ["0.1-candidate"]
+      },
+      {
+        "role": "model_summary",
+        "kind": "orbitfabric.model_summary",
+        "format_versions": ["0.1"]
+      },
+      {
+        "role": "relationship_manifest",
+        "kind": "orbitfabric.relationship_manifest",
+        "format_versions": ["0.1-candidate"]
+      }
+    ]
   },
   "execution": {
     "argv_prefix": [
@@ -24,7 +55,12 @@
   "manifest_version": "0.2-candidate",
   "operations": [
     {
-      "capabilities": [],
+      "capabilities": [
+        "profile_validation",
+        "projection",
+        "artifact_generation",
+        "traceability"
+      ],
       "id": "fpp_contract_projection",
       "input_requirements": []
     }

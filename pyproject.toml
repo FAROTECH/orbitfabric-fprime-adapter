@@ -12,7 +12,11 @@ license = { text = "Apache-2.0" }
 authors = [
   { name = "OrbitFabric Contributors" }
 ]
-dependencies = []
+dependencies = [
+  "jsonschema>=4.23",
+  "PyYAML>=6.0",
+  "rfc8785>=0.1.4"
+]
 
 [project.urls]
 Homepage = "https://github.com/FAROTECH/orbitfabric-fprime-adapter"
@@ -22,7 +26,6 @@ Issues = "https://github.com/FAROTECH/orbitfabric-fprime-adapter/issues"
 [project.optional-dependencies]
 dev = [
   "build>=1.2",
-  "jsonschema>=4.23",
   "mkdocs-material>=9.5",
   "pytest>=8.0",
   "ruff>=0.5"
