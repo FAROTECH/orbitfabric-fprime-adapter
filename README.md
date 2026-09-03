@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Development status:** `0.1.0.dev0`. Product identity and the initial F Prime projection contract are established. Canonical projection implementation and target-native acceptance are still in progress. There is no stable public release yet.
+> **Development status:** `0.1.0.dev0`. Product identity, the initial F Prime projection contract and canonical Core Integration Input Set execution are established. Target-native F Prime acceptance is still in progress. There is no stable public release yet.
 
 ## Why this boundary exists
 
@@ -36,7 +36,21 @@ OrbitFabric packets     -> FPP telemetry packet specifiers
 
 All target placement and local allocation are explicit Profile intent. The adapter does not create the hosting F Prime components, instances or topology.
 
-See [Product contract](docs/product-contract.md) and [F Prime Projection Profile](docs/projection-profile.md).
+## Canonical execution boundary
+
+The adapter consumes the public Core Integration Input Set. It does not parse Mission Model YAML directly.
+
+```bash
+orbitfabric-fprime run \
+  --operation fpp_contract_projection \
+  --input-set-manifest path/to/integration_input_manifest.json \
+  --profile path/to/fprime-profile.yaml \
+  --output-dir generated/fprime
+```
+
+The adapter verifies the input-set digest, each required surface digest, supported Core surface versions, semantic lint state and Profile schema before projection. The generated bundle is completed by `integration_result.json`, which records input provenance, artifacts, mappings, integration diagnostics and execution-backed coverage.
+
+See [Core input and result boundary](docs/core-input-and-result.md).
 
 ## Target lane
 
@@ -88,6 +102,7 @@ The exact OrbitFabric Core conformance baseline used by CI is pinned in `.github
 
 - [Product contract](docs/product-contract.md)
 - [F Prime Projection Profile](docs/projection-profile.md)
+- [Core input and result boundary](docs/core-input-and-result.md)
 - [Architecture and ownership](docs/architecture-and-ownership.md)
 - [Target compatibility](docs/target-compatibility.md)
 - [Integration Coverage](coverage/integration-coverage.md)
