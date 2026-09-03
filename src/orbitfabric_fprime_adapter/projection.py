@@ -459,7 +459,8 @@ def _project_packets(
         missing = [member for member in members if member not in telemetry_targets]
         if missing:
             raise ProjectionError(
-                f"packet {packet['id']}: unprojected telemetry members: {missing}"
+                f"packet {packet['id']}: telemetry members have no projected "
+                f"F Prime target: {missing}"
             )
         target_members = [telemetry_targets[member] for member in members]
         body = "\n".join(f"  {member}" for member in target_members)
