@@ -1,55 +1,32 @@
 {
   "adapter": {
-    "id": "orbitfabric-dummy",
+    "id": "orbitfabric-fprime",
     "version": "0.1.0.dev0"
   },
-  "capabilities": [
-    "projection"
-  ],
+  "capabilities": [],
   "core_input_compatibility": {
     "input_set_versions": [
       "0.1-candidate"
     ],
     "relationship_families": [],
-    "surfaces": [
-      {
-        "format_versions": [
-          "0.1"
-        ],
-        "kind": "orbitfabric.entity_index",
-        "role": "entity_index"
-      }
-    ]
+    "surfaces": []
   },
   "execution": {
     "argv_prefix": [
-      "orbitfabric-dummy-adapter"
+      "orbitfabric-fprime"
     ],
     "protocol": "orbitfabric.adapter_cli.v1"
   },
   "integration": {
-    "id": "orbitfabric-dummy"
+    "id": "orbitfabric-fprime"
   },
   "kind": "orbitfabric.integration_package",
   "manifest_version": "0.2-candidate",
   "operations": [
     {
-      "capabilities": [
-        "projection"
-      ],
-      "id": "project",
+      "capabilities": [],
+      "id": "fpp_contract_projection",
       "input_requirements": []
-    },
-    {
-      "capabilities": [
-        "projection"
-      ],
-      "id": "verification_projection",
-      "input_requirements": [
-        {
-          "role": "scenario"
-        }
-      ]
     }
   ],
   "profile_compatibility": {
@@ -62,7 +39,7 @@
       "format": "json-schema-2020-12",
       "path": "schemas/profile-0.1.schema.json",
       "schema_version": "0.1-candidate",
-      "sha256": "993b5ac3cda61f247e210ed76b16ee0d305f50a3b93b3c4864c1da7805b1936a"
+      "sha256": "199ec1c1fb7cece8d4b61b80212a42cf255f14cfb74cec21380e8f6b279cd14c"
     }
   ],
   "result_compatibility": {

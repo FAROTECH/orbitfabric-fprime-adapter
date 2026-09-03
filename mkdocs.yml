@@ -1,8 +1,8 @@
-site_name: OrbitFabric Adapter Developer Template
-site_description: Developer guide for building, testing, packaging and releasing OrbitFabric adapters.
-site_url: https://farotech.github.io/orbitfabric-adapter-template/
-repo_url: https://github.com/FAROTECH/orbitfabric-adapter-template
-repo_name: FAROTECH/orbitfabric-adapter-template
+site_name: OrbitFabric F Prime Adapter
+site_description: OrbitFabric adapter for projecting mission contracts into F Prime (F´) FPP artifacts.
+site_url: https://farotech.github.io/orbitfabric-fprime-adapter/
+repo_url: https://github.com/FAROTECH/orbitfabric-fprime-adapter
+repo_name: FAROTECH/orbitfabric-fprime-adapter
 edit_uri: ""
 
 docs_dir: docs
@@ -40,16 +40,5 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - Repository Anatomy: repository-anatomy.md
-  - Adapter Identity: adapter-identity.md
-  - Architecture and Ownership: architecture-and-ownership.md
-  - Integration Contracts: integration-contracts.md
-  - Projection Profile and Bindings: projection-profile-and-bindings.md
-  - Testing and Conformance: testing-and-conformance.md
-  - Evidence and Traceability: evidence-and-traceability.md
-  - Runtime Dependencies: runtime-dependencies.md
-  - Release Lifecycle: release-lifecycle.md
-  - Integration Coverage: integration-coverage.md
-  - Adapter Readiness Checklist: adapter-readiness-checklist.md
-  - Migrating from a PoC: migrating-from-poc.md
+  - Architecture and ownership: architecture-and-ownership.md
+  - Development and verification: development.md

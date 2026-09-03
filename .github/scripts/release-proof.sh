@@ -2,21 +2,22 @@
 set -euo pipefail
 
 if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
-  echo "This is the CI release-proof control. Use tools/build_release_bundle.py for local release construction." >&2
+  echo "This is the CI release-proof control. Use tools/build_release_bundle.py locally." >&2
   exit 2
 fi
 
 root="${GITHUB_WORKSPACE:?GITHUB_WORKSPACE is required}"
-work="/tmp/orbitfabric-template-release-proof"
+work="/tmp/orbitfabric-fprime-release-proof"
 state="$work/state"
 evidence="$work/evidence"
 wheelhouse="$work/wheelhouse"
 release_dir="$work/release"
+publisher_release_dir="$work/publisher-release"
 
 export ORBITFABRIC_STATE_DIR="$state"
 
 rm -rf "$work"
-mkdir -p "$evidence" "$wheelhouse" "$release_dir"
+mkdir -p "$evidence" "$wheelhouse" "$release_dir" "$publisher_release_dir"
 
 cd "$root"
 rm -rf dist
@@ -26,9 +27,9 @@ test -n "$wheel"
 
 python tools/build_release_bundle.py \
   --wheel "$wheel" \
-  --authority template.local \
-  --publisher orbitfabric \
-  --name dummy-adapter \
+  --authority github.com \
+  --publisher FAROTECH \
+  --name orbitfabric/fprime \
   --output-dir "$release_dir"
 
 descriptor="$release_dir/adapter-release.json"
@@ -38,7 +39,13 @@ python - <<PY
 from orbitfabric.adapter_manager import ProjectLockService
 from orbitfabric.conformance.adapter_release import load_release_descriptor
 
-load_release_descriptor("$descriptor")
+release = load_release_descriptor("$descriptor")
+assert release["source_coordinate"] == {
+    "authority": "github.com",
+    "publisher": "FAROTECH",
+    "name": "orbitfabric/fprime",
+}
+assert release["release_version"] == "0.1.0.dev0"
 ProjectLockService().load("$lock")
 PY
 
@@ -46,7 +53,26 @@ cp "$descriptor" "$evidence/adapter-release.json"
 cp "$lock" "$evidence/adapter-project-lock.json"
 cp "$release_dir/SHA256SUMS" "$evidence/SHA256SUMS"
 
+python tools/build_release_bundle.py \
+  --wheel "$wheel" \
+  --authority github.com \
+  --publisher FAROTECH \
+  --name orbitfabric/fprime \
+  --release-only \
+  --output-dir "$publisher_release_dir"
+
+test -f "$publisher_release_dir/adapter-release.json"
+test -f "$publisher_release_dir/SHA256SUMS"
+test ! -e "$publisher_release_dir/adapter-project-lock.json"
+
+mkdir -p "$evidence/publisher-release"
+cp "$publisher_release_dir/adapter-release.json" \
+  "$evidence/publisher-release/adapter-release.json"
+cp "$publisher_release_dir/SHA256SUMS" "$evidence/publisher-release/SHA256SUMS"
+cp "$wheel" "$evidence/publisher-release/$(basename "$wheel")"
+
 python -m pip download --dest "$wheelhouse" "$wheel"
+python -m pip download --dest "$wheelhouse" "hatchling>=1.24"
 export PIP_NO_INDEX=1
 export PIP_FIND_LINKS="$wheelhouse"
 
@@ -60,13 +86,15 @@ python - <<'PY'
 import json
 from pathlib import Path
 
-report = json.loads(Path("/tmp/orbitfabric-template-release-proof/evidence/before-check.json").read_text())
+report = json.loads(
+    Path("/tmp/orbitfabric-fprime-release-proof/evidence/before-check.json").read_text()
+)
 assert report["status"] == "NOT_SATISFIED"
 assert report["adapters"][0]["status"] == "MISSING"
 PY
 
 orbitfabric adapter lock install "$lock" \
-  --source-coordinate "template.local:orbitfabric/dummy-adapter" \
+  --source-coordinate "github.com:FAROTECH/orbitfabric/fprime" \
   --release-descriptor "$descriptor" \
   --artifact "$wheel" \
   --json | tee "$evidence/install-from-lock.json"
@@ -76,7 +104,7 @@ import json
 from pathlib import Path
 
 report = json.loads(
-    Path("/tmp/orbitfabric-template-release-proof/evidence/install-from-lock.json").read_text()
+    Path("/tmp/orbitfabric-fprime-release-proof/evidence/install-from-lock.json").read_text()
 )
 assert report["before_status"] == "MISSING"
 assert report["action"] == "INSTALLED"
@@ -87,26 +115,32 @@ PY
 source "$work/install-env"
 
 orbitfabric adapter lock check "$lock" --json | tee "$evidence/after-check.json"
-python - <<'PY'
-import json
-from pathlib import Path
 
-report = json.loads(Path("/tmp/orbitfabric-template-release-proof/evidence/after-check.json").read_text())
-assert report["status"] == "MATCH"
-assert report["adapters"][0]["status"] == "MATCH"
-PY
-
-orbitfabric adapter lock install "$lock" \
-  --source-coordinate "template.local:orbitfabric/dummy-adapter" \
-  --release-descriptor "$descriptor" \
-  --artifact "$wheel" \
-  --json | tee "$evidence/second-install-from-lock.json"
 python - <<'PY'
 import json
 from pathlib import Path
 
 report = json.loads(
-    Path("/tmp/orbitfabric-template-release-proof/evidence/second-install-from-lock.json").read_text()
+    Path("/tmp/orbitfabric-fprime-release-proof/evidence/after-check.json").read_text()
+)
+assert report["status"] == "MATCH"
+assert report["adapters"][0]["status"] == "MATCH"
+PY
+
+orbitfabric adapter lock install "$lock" \
+  --source-coordinate "github.com:FAROTECH/orbitfabric/fprime" \
+  --release-descriptor "$descriptor" \
+  --artifact "$wheel" \
+  --json | tee "$evidence/second-install-from-lock.json"
+
+python - <<'PY'
+import json
+from pathlib import Path
+
+report = json.loads(
+    Path(
+        "/tmp/orbitfabric-fprime-release-proof/evidence/second-install-from-lock.json"
+    ).read_text()
 )
 assert report["before_status"] == "MATCH"
 assert report["action"] == "NOOP"
@@ -123,7 +157,7 @@ import json
 from pathlib import Path
 
 inventory = json.loads(
-    Path("/tmp/orbitfabric-template-release-proof/evidence/final-inventory.json").read_text()
+    Path("/tmp/orbitfabric-fprime-release-proof/evidence/final-inventory.json").read_text()
 )
 assert inventory == []
 PY

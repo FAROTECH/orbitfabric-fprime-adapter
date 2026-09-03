@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orbitfabric.dev/adapters/fprime/profile-0.1.schema.json",
+  "title": "OrbitFabric F Prime Projection Profile",
+  "description": "Initial identity boundary for the canonical F Prime adapter. Target-specific binding semantics are intentionally introduced in a later product-contract revision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "integration"
+  ],
+  "properties": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "const": "0.1-candidate"
+        }
+      }
+    },
+    "integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "const": "orbitfabric-fprime"
+        }
+      }
+    }
+  }
+}
