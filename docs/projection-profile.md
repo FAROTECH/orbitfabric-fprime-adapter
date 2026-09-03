@@ -38,7 +38,7 @@ The schema binds source domain to target kind directly. For example, a telemetry
   config:
     kind: telemetry
     host_component: Payload.Monitor
-    host_instance: payloadMonitor
+    host_instance: Ref.payloadMonitor
     symbol: OF_Temperature
     local_id: 16
     update: always
@@ -54,7 +54,7 @@ The schema binds source domain to target kind directly. For example, a telemetry
   config:
     kind: command
     host_component: Payload.Controller
-    host_instance: payloadController
+    host_instance: Ref.payloadController
     symbol: OF_StartAcquisition
     local_opcode: 32
     command_kind: async
@@ -74,7 +74,7 @@ For an async command, `priority` and `queue_full_behavior` are mandatory. They a
   config:
     kind: event
     host_component: Payload.Controller
-    host_instance: payloadController
+    host_instance: Ref.payloadController
     symbol: OF_AcquisitionStarted
     local_id: 48
     severity: activity_high
@@ -99,13 +99,15 @@ For an async command, `priority` and `queue_full_behavior` are mandatory. They a
 
 Packet membership comes from the OrbitFabric packet contract and is resolved through projected telemetry bindings. The adapter emits packet specifiers only; the F Prime project owns the enclosing telemetry packet set and its completeness/omit policy.
 
-## FPP symbols
+## FPP symbols and instance references
 
-Target symbols use FPP identifier rules and reject known FPP keywords/reserved built-in names at schema validation time.
+Target symbols use FPP identifier rules and reject known FPP keywords and reserved built-in names at schema validation time.
 
-`host_component` may be a module-qualified FPP component type such as `Payload.Monitor`. `host_instance` is the project-owned instance name used for lexical target references.
+`host_component` may be a module-qualified FPP component type such as `Payload.Monitor`.
 
-Neither field authorizes the adapter to create the component or instance.
+`host_instance` is the project-owned FPP component instance reference used for lexical target references. It may also be qualified, for example `Ref.payloadMonitor` or `Mission.Payload.payloadMonitor`. The adapter preserves this authored lexical identity. It does not manufacture a globally resolved target identity by string concatenation.
+
+Neither field authorizes the adapter to create the component or instance. FPP and the generated F Prime dictionary remain authoritative for downstream name resolution.
 
 ## Telemetry limit policy
 
