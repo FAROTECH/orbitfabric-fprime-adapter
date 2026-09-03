@@ -6,6 +6,13 @@ from importlib.resources import files
 
 from orbitfabric.conformance.integration_contracts import validate_manifest
 
+EXPECTED_CAPABILITIES = [
+    "profile_validation",
+    "projection",
+    "artifact_generation",
+    "traceability",
+]
+
 
 def test_manifest_conforms_to_core_contract() -> None:
     package = files("orbitfabric_fprime_adapter")
@@ -19,11 +26,18 @@ def test_manifest_conforms_to_core_contract() -> None:
         "version": "0.1.0.dev0",
     }
     assert manifest["integration"]["id"] == "orbitfabric-fprime"
-    assert manifest["capabilities"] == []
-    assert manifest["core_input_compatibility"]["surfaces"] == []
+    assert manifest["capabilities"] == EXPECTED_CAPABILITIES
+    assert manifest["core_input_compatibility"]["relationship_families"] == []
+    assert {item["role"] for item in manifest["core_input_compatibility"]["surfaces"]} == {
+        "entity_index",
+        "lint_report",
+        "mission_snapshot",
+        "model_summary",
+        "relationship_manifest",
+    }
     assert manifest["operations"] == [
         {
-            "capabilities": [],
+            "capabilities": EXPECTED_CAPABILITIES,
             "id": "fpp_contract_projection",
             "input_requirements": [],
         }
