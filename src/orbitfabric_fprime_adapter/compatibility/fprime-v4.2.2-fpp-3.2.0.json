@@ -2,7 +2,7 @@
   "kind": "orbitfabric.fprime.target_compatibility",
   "format_version": "0.1-candidate",
   "id": "fprime-v4.2.2-fpp-3.2.0",
-  "status": "historical_evidence_candidate",
+  "status": "canonical_accepted",
   "fprime": {
     "version": "v4.2.2",
     "commit": "8a62e455a90b6d4f498c332d45d65a2a819988d8"
@@ -13,8 +13,10 @@
   },
   "evidence": {
     "historical_poc": "accepted",
-    "canonical_source_acceptance": "pending",
-    "canonical_native_acceptance_gate": "PR5"
+    "canonical_source_acceptance": "accepted",
+    "canonical_native_static_acceptance": "accepted",
+    "canonical_dictionary_conformance": "accepted",
+    "canonical_gds_runtime_acceptance": "accepted"
   },
   "claims": {
     "exact_pair_only": true,
