@@ -1,0 +1,6 @@
+{
+  "manifest_version": "0.1-candidate",
+  "kind": "orbitfabric.relationship_manifest",
+  "mission": {"id": "fprime-poc", "model_version": "0.1.0"},
+  "relationships": []
+}
