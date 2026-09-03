@@ -70,31 +70,28 @@ DICTIONARY="${INSTALL_ROOT}/dict/RefTopologyDictionary.json"
 [[ -f "${DICTIONARY}" ]] || { echo "error: runtime dictionary not found: ${DICTIONARY}" >&2; exit 4; }
 
 printf '%s\n' "==> Start F Prime GDS without browser UI"
-fprime-gds --gui none --deployment "${INSTALL_ROOT}" >"${GDS_LOG}" 2>&1 &
+PYTHONUNBUFFERED=1 fprime-gds --gui none --deployment "${INSTALL_ROOT}" >"${GDS_LOG}" 2>&1 &
 GDS_PID=$!
 
-for _ in $(seq 1 20); do
-  if ! kill -0 "${GDS_PID}" 2>/dev/null; then
-    echo "error: fprime-gds exited before runtime test" >&2
-    cat "${GDS_LOG}" >&2
-    exit 5
-  fi
-  if grep -q "F prime is now running" "${GDS_LOG}"; then
-    break
-  fi
-  sleep 1
-done
-
-if ! grep -q "F prime is now running" "${GDS_LOG}"; then
-  echo "error: fprime-gds did not become ready" >&2
+# Do not depend on a human-facing stdout marker for readiness. With redirected
+# output, fprime-gds may buffer or omit that text while both GDS and Ref are
+# already running. The live F Prime pytest fixture below is the authoritative
+# connectivity probe and fails if the GDS Test API is not usable.
+sleep 5
+if ! kill -0 "${GDS_PID}" 2>/dev/null; then
+  echo "error: fprime-gds exited before runtime test" >&2
   cat "${GDS_LOG}" >&2
   exit 5
 fi
 
 printf '%s\n' "==> Execute GDS closed-loop acceptance"
 cd "${ROOT}"
-pytest -q "${ROOT}/native_acceptance/runtime/test_ref_projection_runtime.py" \
-  --junitxml="${JUNIT}"
+if ! pytest -q "${ROOT}/native_acceptance/runtime/test_ref_projection_runtime.py" \
+  --junitxml="${JUNIT}"; then
+  echo "error: F Prime GDS closed-loop test failed" >&2
+  cat "${GDS_LOG}" >&2
+  exit 6
+fi
 
 python - "${GENERATED}/integration_result.json" "${PROJECT}/HARNESS_MANIFEST.json" \
   "${DICTIONARY}" "${JUNIT}" "${EVIDENCE}/native_runtime_acceptance.json" <<'PY'
