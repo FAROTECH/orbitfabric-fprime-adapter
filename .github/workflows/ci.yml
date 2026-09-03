@@ -125,6 +125,48 @@ jobs:
           path: .native-static-work/evidence
           if-no-files-found: warn
 
+  reference-example:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout adapter
+        uses: actions/checkout@v4
+
+      - name: Checkout exact OrbitFabric Core baseline
+        uses: actions/checkout@v4
+        with:
+          repository: FAROTECH/orbitfabric
+          ref: 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
+          path: _orbitfabric_core
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install exact Core baseline and adapter wheel
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+          python -m pip install ./_orbitfabric_core
+          python -m build --wheel
+          python -m pip install --force-reinstall dist/*.whl
+
+      - name: Run Reference Example contract evolution proof
+        run: |
+          python examples/reference-contract-evolution/verify_reference_example.py \
+            --core-root "$PWD/_orbitfabric_core" \
+            --work-dir "$PWD/.reference-example-work"
+
+      - name: Upload Reference Example evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fprime-reference-contract-evolution
+          path: .reference-example-work/reference-example-proof.json
+          if-no-files-found: warn
+
   installed-lifecycle:
     needs: checks
     runs-on: ubuntu-latest
@@ -166,6 +208,7 @@ jobs:
     needs:
       - installed-lifecycle
       - native-static
+      - reference-example
     runs-on: ubuntu-latest
 
     steps:
