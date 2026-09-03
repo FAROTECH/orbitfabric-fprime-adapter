@@ -1,6 +1,14 @@
 {
-  "kind": "orbitfabric-lint",
+  "tool": "orbitfabric-lint",
   "version": "1.2.0",
+  "mission": "fprime-poc",
+  "model_version": "0.1.0",
   "result": "passed",
+  "loaded": {},
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "info": 0
+  },
   "findings": []
 }
