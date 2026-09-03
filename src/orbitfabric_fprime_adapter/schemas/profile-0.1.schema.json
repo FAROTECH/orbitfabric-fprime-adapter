@@ -5,104 +5,55 @@
   "description": "Target-specific Profile for the orbitfabric-fprime adapter fpp_contract_projection operation.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "kind",
-    "profile_version",
-    "profile",
-    "integration",
-    "settings",
-    "bindings"
-  ],
+  "required": ["kind", "profile_version", "profile", "integration", "settings", "bindings"],
   "properties": {
-    "kind": {
-      "const": "orbitfabric.projection_profile"
-    },
-    "profile_version": {
-      "const": "0.1-candidate"
-    },
+    "kind": {"const": "orbitfabric.projection_profile"},
+    "profile_version": {"const": "0.1-candidate"},
     "profile": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "version"
-      ],
+      "required": ["id", "version"],
       "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "version": {
-          "type": "string",
-          "minLength": 1
-        },
-        "description": {
-          "type": "string"
-        }
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "description": {"type": "string"}
       }
     },
     "integration": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "schema_version"
-      ],
+      "required": ["id", "schema_version"],
       "properties": {
-        "id": {
-          "const": "orbitfabric-fprime"
-        },
-        "schema_version": {
-          "const": "0.1-candidate"
-        }
+        "id": {"const": "orbitfabric-fprime"},
+        "schema_version": {"const": "0.1-candidate"}
       }
     },
     "settings": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "target",
-        "telemetry_limits"
-      ],
+      "required": ["target", "telemetry_limits"],
       "properties": {
         "target": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "fprime",
-            "fpp"
-          ],
+          "required": ["fprime", "fpp"],
           "properties": {
             "fprime": {
               "type": "object",
               "additionalProperties": false,
-              "required": [
-                "version",
-                "commit"
-              ],
+              "required": ["version", "commit"],
               "properties": {
-                "version": {
-                  "const": "v4.2.2"
-                },
-                "commit": {
-                  "const": "8a62e455a90b6d4f498c332d45d65a2a819988d8"
-                }
+                "version": {"const": "v4.2.2"},
+                "commit": {"const": "8a62e455a90b6d4f498c332d45d65a2a819988d8"}
               }
             },
             "fpp": {
               "type": "object",
               "additionalProperties": false,
-              "required": [
-                "version",
-                "commit"
-              ],
+              "required": ["version", "commit"],
               "properties": {
-                "version": {
-                  "const": "3.2.0"
-                },
-                "commit": {
-                  "const": "93f484b7521a8e8894cba25b26e633cc87d8e37a"
-                }
+                "version": {"const": "3.2.0"},
+                "commit": {"const": "93f484b7521a8e8894cba25b26e633cc87d8e37a"}
               }
             }
           }
@@ -110,27 +61,10 @@
         "telemetry_limits": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "critical",
-            "warning"
-          ],
+          "required": ["critical", "warning"],
           "properties": {
-            "critical": {
-              "enum": [
-                "red",
-                "orange",
-                "yellow",
-                "unmapped"
-              ]
-            },
-            "warning": {
-              "enum": [
-                "red",
-                "orange",
-                "yellow",
-                "unmapped"
-              ]
-            }
+            "critical": {"enum": ["red", "orange", "yellow", "unmapped"]},
+            "warning": {"enum": ["red", "orange", "yellow", "unmapped"]}
           }
         }
       }
@@ -140,146 +74,36 @@
       "minItems": 1,
       "items": {
         "oneOf": [
-          {
-            "$ref": "#/$defs/telemetryBinding"
-          },
-          {
-            "$ref": "#/$defs/commandBinding"
-          },
-          {
-            "$ref": "#/$defs/eventBinding"
-          },
-          {
-            "$ref": "#/$defs/packetBinding"
-          }
+          {"$ref": "#/$defs/telemetryBinding"},
+          {"$ref": "#/$defs/commandBinding"},
+          {"$ref": "#/$defs/eventBinding"},
+          {"$ref": "#/$defs/packetBinding"}
         ]
       }
     }
   },
   "$defs": {
-    "sourceId": {
-      "type": "string",
-      "minLength": 1
-    },
+    "sourceId": {"type": "string", "minLength": 1},
     "fppSymbol": {
       "type": "string",
       "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
       "minLength": 1,
       "not": {
         "enum": [
-          "F32",
-          "F64",
-          "I16",
-          "I32",
-          "I64",
-          "I8",
-          "U16",
-          "U32",
-          "U64",
-          "U8",
-          "action",
-          "active",
-          "activity",
-          "always",
-          "array",
-          "assert",
-          "async",
-          "at",
-          "base",
-          "block",
-          "bool",
-          "change",
-          "choice",
-          "command",
-          "component",
-          "connections",
-          "constant",
-          "container",
-          "cpu",
-          "default",
-          "diagnostic",
-          "dictionary",
-          "do",
-          "drop",
-          "else",
-          "enter",
-          "entry",
-          "enum",
-          "event",
-          "every",
-          "exit",
-          "external",
-          "false",
-          "fatal",
-          "format",
-          "get",
-          "group",
-          "guard",
-          "guarded",
-          "health",
-          "high",
-          "hook",
-          "id",
-          "if",
-          "import",
-          "include",
-          "initial",
-          "input",
-          "instance",
-          "interface",
-          "internal",
-          "locate",
-          "low",
-          "machine",
-          "match",
-          "module",
-          "omit",
-          "on",
-          "opcode",
-          "orange",
-          "output",
-          "packet",
-          "packets",
-          "param",
-          "passive",
-          "phase",
-          "port",
-          "priority",
-          "product",
-          "queue",
-          "queued",
-          "record",
-          "recv",
-          "red",
-          "ref",
-          "reg",
-          "request",
-          "resp",
-          "save",
-          "send",
-          "serial",
-          "set",
-          "severity",
-          "signal",
-          "size",
-          "sizeof",
-          "stack",
-          "state",
-          "string",
-          "struct",
-          "sync",
-          "telemetry",
-          "text",
-          "throttle",
-          "time",
-          "topology",
-          "true",
-          "type",
-          "unmatched",
-          "update",
-          "warning",
-          "with",
-          "yellow"
+          "F32", "F64", "I16", "I32", "I64", "I8", "U16", "U32", "U64", "U8",
+          "action", "active", "activity", "always", "array", "assert", "async", "at",
+          "base", "block", "bool", "change", "choice", "command", "component", "connections",
+          "constant", "container", "cpu", "default", "diagnostic", "dictionary", "do", "drop",
+          "else", "enter", "entry", "enum", "event", "every", "exit", "external", "false",
+          "fatal", "format", "get", "group", "guard", "guarded", "health", "high", "hook",
+          "id", "if", "import", "include", "initial", "input", "instance", "interface",
+          "internal", "locate", "low", "machine", "match", "module", "omit", "on", "opcode",
+          "orange", "output", "packet", "packets", "param", "passive", "phase", "port",
+          "priority", "product", "queue", "queued", "record", "recv", "red", "ref", "reg",
+          "request", "resp", "save", "send", "serial", "set", "severity", "signal", "size",
+          "sizeof", "stack", "state", "string", "struct", "sync", "telemetry", "text",
+          "throttle", "time", "topology", "true", "type", "unmatched", "update", "warning",
+          "with", "yellow"
         ]
       }
     },
@@ -291,180 +115,63 @@
     "telemetrySource": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "domain",
-        "id"
-      ],
-      "properties": {
-        "domain": {
-          "const": "telemetry"
-        },
-        "id": {
-          "$ref": "#/$defs/sourceId"
-        }
-      }
+      "required": ["domain", "id"],
+      "properties": {"domain": {"const": "telemetry"}, "id": {"$ref": "#/$defs/sourceId"}}
     },
     "commandSource": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "domain",
-        "id"
-      ],
-      "properties": {
-        "domain": {
-          "const": "commands"
-        },
-        "id": {
-          "$ref": "#/$defs/sourceId"
-        }
-      }
+      "required": ["domain", "id"],
+      "properties": {"domain": {"const": "commands"}, "id": {"$ref": "#/$defs/sourceId"}}
     },
     "eventSource": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "domain",
-        "id"
-      ],
-      "properties": {
-        "domain": {
-          "const": "events"
-        },
-        "id": {
-          "$ref": "#/$defs/sourceId"
-        }
-      }
+      "required": ["domain", "id"],
+      "properties": {"domain": {"const": "events"}, "id": {"$ref": "#/$defs/sourceId"}}
     },
     "packetSource": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "domain",
-        "id"
-      ],
-      "properties": {
-        "domain": {
-          "const": "packets"
-        },
-        "id": {
-          "$ref": "#/$defs/sourceId"
-        }
-      }
+      "required": ["domain", "id"],
+      "properties": {"domain": {"const": "packets"}, "id": {"$ref": "#/$defs/sourceId"}}
     },
     "telemetryConfig": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "host_component",
-        "host_instance",
-        "symbol",
-        "local_id",
-        "update"
-      ],
+      "required": ["kind", "host_component", "host_instance", "symbol", "local_id", "update"],
       "properties": {
-        "kind": {
-          "const": "telemetry"
-        },
-        "host_component": {
-          "$ref": "#/$defs/fppQualifiedIdentifier"
-        },
-        "host_instance": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "symbol": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "local_id": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "update": {
-          "enum": [
-            "always",
-            "on_change"
-          ]
-        }
+        "kind": {"const": "telemetry"},
+        "host_component": {"$ref": "#/$defs/fppQualifiedIdentifier"},
+        "host_instance": {"$ref": "#/$defs/fppQualifiedIdentifier"},
+        "symbol": {"$ref": "#/$defs/fppSymbol"},
+        "local_id": {"type": "integer", "minimum": 0},
+        "update": {"enum": ["always", "on_change"]}
       }
     },
     "commandConfig": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "host_component",
-        "host_instance",
-        "symbol",
-        "local_opcode",
-        "command_kind"
-      ],
+      "required": ["kind", "host_component", "host_instance", "symbol", "local_opcode", "command_kind"],
       "properties": {
-        "kind": {
-          "const": "command"
-        },
-        "host_component": {
-          "$ref": "#/$defs/fppQualifiedIdentifier"
-        },
-        "host_instance": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "symbol": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "local_opcode": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "command_kind": {
-          "enum": [
-            "async",
-            "guarded",
-            "sync"
-          ]
-        },
-        "priority": {
-          "type": "integer"
-        },
-        "queue_full_behavior": {
-          "enum": [
-            "assert",
-            "block",
-            "drop"
-          ]
-        }
+        "kind": {"const": "command"},
+        "host_component": {"$ref": "#/$defs/fppQualifiedIdentifier"},
+        "host_instance": {"$ref": "#/$defs/fppQualifiedIdentifier"},
+        "symbol": {"$ref": "#/$defs/fppSymbol"},
+        "local_opcode": {"type": "integer", "minimum": 0},
+        "command_kind": {"enum": ["async", "guarded", "sync"]},
+        "priority": {"type": "integer"},
+        "queue_full_behavior": {"enum": ["assert", "block", "drop"]}
       },
       "allOf": [
         {
-          "if": {
-            "properties": {
-              "command_kind": {
-                "const": "async"
-              }
-            },
-            "required": [
-              "command_kind"
-            ]
-          },
-          "then": {
-            "required": [
-              "priority",
-              "queue_full_behavior"
-            ]
-          },
+          "if": {"properties": {"command_kind": {"const": "async"}}, "required": ["command_kind"]},
+          "then": {"required": ["priority", "queue_full_behavior"]},
           "else": {
             "not": {
               "anyOf": [
-                {
-                  "required": [
-                    "priority"
-                  ]
-                },
-                {
-                  "required": [
-                    "queue_full_behavior"
-                  ]
-                }
+                {"required": ["priority"]},
+                {"required": ["queue_full_behavior"]}
               ]
             }
           }
@@ -474,40 +181,17 @@
     "eventConfig": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "host_component",
-        "host_instance",
-        "symbol",
-        "local_id",
-        "severity"
-      ],
+      "required": ["kind", "host_component", "host_instance", "symbol", "local_id", "severity"],
       "properties": {
-        "kind": {
-          "const": "event"
-        },
-        "host_component": {
-          "$ref": "#/$defs/fppQualifiedIdentifier"
-        },
-        "host_instance": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "symbol": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "local_id": {
-          "type": "integer",
-          "minimum": 0
-        },
+        "kind": {"const": "event"},
+        "host_component": {"$ref": "#/$defs/fppQualifiedIdentifier"},
+        "host_instance": {"$ref": "#/$defs/fppQualifiedIdentifier"},
+        "symbol": {"$ref": "#/$defs/fppSymbol"},
+        "local_id": {"type": "integer", "minimum": 0},
         "severity": {
           "enum": [
-            "activity_high",
-            "activity_low",
-            "command",
-            "diagnostic",
-            "fatal",
-            "warning_high",
-            "warning_low"
+            "activity_high", "activity_low", "command", "diagnostic", "fatal",
+            "warning_high", "warning_low"
           ]
         }
       }
@@ -515,135 +199,65 @@
     "packetConfig": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "packet_set",
-        "packet_name",
-        "packet_id",
-        "group"
-      ],
+      "required": ["kind", "packet_set", "packet_name", "packet_id", "group"],
       "properties": {
-        "kind": {
-          "const": "packet"
-        },
-        "packet_set": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "packet_name": {
-          "$ref": "#/$defs/fppSymbol"
-        },
-        "packet_id": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "group": {
-          "type": "integer",
-          "minimum": 0
-        }
+        "kind": {"const": "packet"},
+        "packet_set": {"$ref": "#/$defs/fppSymbol"},
+        "packet_name": {"$ref": "#/$defs/fppSymbol"},
+        "packet_id": {"type": "integer", "minimum": 0},
+        "group": {"type": "integer", "minimum": 0}
       }
     },
     "telemetryBinding": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "sources",
-        "config"
-      ],
+      "required": ["id", "sources", "config"],
       "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
+        "id": {"type": "string", "minLength": 1},
         "sources": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/$defs/telemetrySource"
-          }
+          "type": "array", "minItems": 1, "maxItems": 1,
+          "items": {"$ref": "#/$defs/telemetrySource"}
         },
-        "config": {
-          "$ref": "#/$defs/telemetryConfig"
-        }
+        "config": {"$ref": "#/$defs/telemetryConfig"}
       }
     },
     "commandBinding": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "sources",
-        "config"
-      ],
+      "required": ["id", "sources", "config"],
       "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
+        "id": {"type": "string", "minLength": 1},
         "sources": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/$defs/commandSource"
-          }
+          "type": "array", "minItems": 1, "maxItems": 1,
+          "items": {"$ref": "#/$defs/commandSource"}
         },
-        "config": {
-          "$ref": "#/$defs/commandConfig"
-        }
+        "config": {"$ref": "#/$defs/commandConfig"}
       }
     },
     "eventBinding": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "sources",
-        "config"
-      ],
+      "required": ["id", "sources", "config"],
       "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
+        "id": {"type": "string", "minLength": 1},
         "sources": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/$defs/eventSource"
-          }
+          "type": "array", "minItems": 1, "maxItems": 1,
+          "items": {"$ref": "#/$defs/eventSource"}
         },
-        "config": {
-          "$ref": "#/$defs/eventConfig"
-        }
+        "config": {"$ref": "#/$defs/eventConfig"}
       }
     },
     "packetBinding": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "sources",
-        "config"
-      ],
+      "required": ["id", "sources", "config"],
       "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
+        "id": {"type": "string", "minLength": 1},
         "sources": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/$defs/packetSource"
-          }
+          "type": "array", "minItems": 1, "maxItems": 1,
+          "items": {"$ref": "#/$defs/packetSource"}
         },
-        "config": {
-          "$ref": "#/$defs/packetConfig"
-        }
+        "config": {"$ref": "#/$defs/packetConfig"}
       }
     }
   }
