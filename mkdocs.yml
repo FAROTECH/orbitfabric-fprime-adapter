@@ -40,5 +40,9 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Product contract: product-contract.md
+  - F Prime Projection Profile: projection-profile.md
   - Architecture and ownership: architecture-and-ownership.md
+  - Target compatibility: target-compatibility.md
+  - Integration Coverage: integration-coverage.md
   - Development and verification: development.md

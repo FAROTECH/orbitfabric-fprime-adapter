@@ -55,6 +55,7 @@ jobs:
           required = {
               "orbitfabric_fprime_adapter/integration_package.json",
               "orbitfabric_fprime_adapter/schemas/profile-0.1.schema.json",
+              "orbitfabric_fprime_adapter/compatibility/fprime-v4.2.2-fpp-3.2.0.json",
           }
           missing = sorted(required - names)
           if missing:

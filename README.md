@@ -2,28 +2,60 @@
 
 `orbitfabric-fprime-adapter` connects OrbitFabric mission contracts to native F Prime (F´) projects.
 
-The adapter is designed to project explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
+The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Development status:** `0.1.0.dev0`. The canonical product identity and managed lifecycle are established. FPP projection semantics are being migrated from validated historical evidence and are not yet part of this baseline. There is no stable public release yet.
+> **Development status:** `0.1.0.dev0`. Product identity and the initial F Prime projection contract are established. Canonical projection implementation and target-native acceptance are still in progress. There is no stable public release yet.
 
-## Product boundary
+## Why this boundary exists
 
-OrbitFabric owns mission-level identity and integration contracts. This adapter owns F Prime-specific projection and target binding. F Prime remains authoritative for native FPP interpretation, autocoding, generated dictionaries, build behavior and runtime semantics.
+OrbitFabric owns stable mission-level identity and integration contracts. This adapter owns explicit F Prime-specific projection intent. F Prime remains authoritative for FPP interpretation, autocoding, generated dictionaries, build behavior and runtime semantics.
 
-In particular, this adapter does **not** infer:
+That means an F Prime project can evolve its internal architecture without forcing the upstream OrbitFabric mission contract to become an F Prime architecture model.
+
+The adapter does **not** infer:
 
 - OrbitFabric subsystems as F Prime components;
 - OrbitFabric relationships as F Prime topology connections;
 - OrbitFabric modes as F Prime state machines;
 - project topology, scheduling or runtime architecture.
 
-The first product operation is reserved as:
+## First operation
 
 ```text
 fpp_contract_projection
 ```
 
-Its target-specific contract and implementation are intentionally introduced after the product bootstrap has been accepted.
+The first release is deliberately limited to four projection families:
+
+```text
+OrbitFabric telemetry   -> FPP telemetry declarations
+OrbitFabric commands    -> FPP command declarations
+OrbitFabric events      -> FPP event declarations
+OrbitFabric packets     -> FPP telemetry packet specifiers
+```
+
+All target placement and local allocation are explicit Profile intent. The adapter does not create the hosting F Prime components, instances or topology.
+
+See [Product contract](docs/product-contract.md) and [F Prime Projection Profile](docs/projection-profile.md).
+
+## Target lane
+
+The initial candidate compatibility lane is exact:
+
+```text
+F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
+FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
+```
+
+This pair is selected from historical native evidence. The canonical adapter has not yet re-established native acceptance, so no F Prime version range is currently claimed.
+
+See [Target compatibility](docs/target-compatibility.md).
+
+## Integration Coverage
+
+The initial semantic matrix is explicit about partial representation and unsupported semantics. OrbitFabric fields that do not have an equivalent FPP declaration meaning are preserved as upstream semantics rather than silently converted into F Prime behavior.
+
+See [Integration Coverage](coverage/integration-coverage.md).
 
 ## Canonical identity
 
@@ -54,7 +86,11 @@ The exact OrbitFabric Core conformance baseline used by CI is pinned in `.github
 
 ## Documentation
 
+- [Product contract](docs/product-contract.md)
+- [F Prime Projection Profile](docs/projection-profile.md)
 - [Architecture and ownership](docs/architecture-and-ownership.md)
+- [Target compatibility](docs/target-compatibility.md)
+- [Integration Coverage](coverage/integration-coverage.md)
 - [Development and verification](docs/development.md)
 
 ## F Prime project relationship
