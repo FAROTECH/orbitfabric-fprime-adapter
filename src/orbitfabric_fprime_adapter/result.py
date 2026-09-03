@@ -44,6 +44,36 @@ def _mappings(projection: ProjectionResult) -> list[dict[str, Any]]:
     ]
 
 
+def _resolutions(
+    profile: dict[str, Any], projection: ProjectionResult
+) -> list[dict[str, Any]]:
+    profile_bindings = {binding["id"]: binding for binding in profile["bindings"]}
+    result: list[dict[str, Any]] = []
+
+    for record in projection.mappings:
+        binding_id = record["binding_id"]
+        binding = profile_bindings[binding_id]
+        config = binding["config"]
+        source = record["source"]
+
+        for property_name, value in config.items():
+            if property_name == "kind":
+                continue
+            result.append(
+                {
+                    "id": f"resolution.{binding_id}.{property_name}",
+                    "mapping": _mapping_id(binding_id),
+                    "binding": binding_id,
+                    "sources": [source],
+                    "property": property_name,
+                    "value": value,
+                    "origin": "profile",
+                }
+            )
+
+    return result
+
+
 def _artifact_mapping_ids(projection: ProjectionResult) -> dict[str, list[str]]:
     by_kind: dict[str, list[str]] = defaultdict(list)
     for record in projection.mappings:
@@ -152,6 +182,7 @@ def successful_result(
     artifact_metadata: list[dict[str, Any]],
 ) -> dict[str, Any]:
     mission = input_set.manifest["mission"]
+    profile_digest = sha256_file(profile_path)
     return {
         "kind": "orbitfabric.integration_result",
         "result_version": RESULT_VERSION,
@@ -182,7 +213,7 @@ def successful_result(
                 "profile_version": profile["profile_version"],
                 "id": profile["profile"]["id"],
                 "version": profile["profile"]["version"],
-                "sha256": sha256_file(profile_path),
+                "sha256": profile_digest,
                 "reason": None,
             },
             "operation_inputs": [],
@@ -190,7 +221,7 @@ def successful_result(
         "capabilities": list(CAPABILITIES),
         "artifacts": _artifacts(projection, artifact_metadata),
         "mappings": _mappings(projection),
-        "resolutions": [],
+        "resolutions": _resolutions(profile, projection),
         "diagnostics": _diagnostics(projection),
         "coverage": _coverage(projection),
         "evidence": [
@@ -206,7 +237,7 @@ def successful_result(
                 "producer": INTEGRATION_ID,
                 "kind": "projection_profile_validation",
                 "status": "passed",
-                "sha256": sha256_file(profile_path),
+                "sha256": profile_digest,
             },
         ],
         "external_tools": [],
