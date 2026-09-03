@@ -97,6 +97,12 @@ def test_representative_profile_conforms() -> None:
     assert _validate(_valid_profile()) == []
 
 
+def test_qualified_host_instance_conforms() -> None:
+    profile = _valid_profile()
+    profile["bindings"][0]["config"]["host_instance"] = "Mission.Payload.payloadMonitor"
+    assert _validate(profile) == []
+
+
 def test_cross_domain_binding_is_rejected() -> None:
     profile = _valid_profile()
     profile["bindings"][0]["sources"][0]["domain"] = "commands"
