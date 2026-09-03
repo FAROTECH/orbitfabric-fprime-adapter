@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Development status:** `0.1.0.dev0`. Product identity, Core Integration Input Set execution, FPP projection and exact-lane native static acceptance are established. Consumer Reference Example acceptance is in progress. There is no stable public release yet.
+> **Development status:** `0.1.0.dev0`. Product identity, Core Integration Input Set execution, FPP projection, consumer Reference Example acceptance, exact-lane native generation/build/dictionary conformance and canonical GDS closed-loop runtime acceptance are established. Publication and external greenfield acceptance remain before the first stable release.
 
 ## Why this boundary exists
 
@@ -61,7 +61,7 @@ F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
 FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-Canonical CI has observed this lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build` and generated dictionary conformance. No broader F Prime version range is currently claimed.
+Canonical CI has observed this exact lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build`, generated dictionary conformance and a live F Prime GDS closed loop. The runtime gate sends `Ref.pingRcvr.OF_SetMode(mode=2)` and observes command completion, `Ref.pingRcvr.OF_Temperature = 22.0` and `Ref.pingRcvr.OF_ModeChanged` in the evidence-only Ref fixture. No broader F Prime version range is currently claimed.
 
 See [Target compatibility](docs/target-compatibility.md).
 
