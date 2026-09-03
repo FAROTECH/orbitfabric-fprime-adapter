@@ -1,0 +1,95 @@
+kind: orbitfabric.projection_profile
+profile_version: 0.1-candidate
+profile:
+  id: reference-contract-evolution-b
+  version: 0.1.0
+  description: Evolved layout with payload control and monitoring split across F Prime components.
+integration:
+  id: orbitfabric-fprime
+  schema_version: 0.1-candidate
+settings:
+  target:
+    fprime:
+      version: v4.2.2
+      commit: 8a62e455a90b6d4f498c332d45d65a2a819988d8
+    fpp:
+      version: 3.2.0
+      commit: 93f484b7521a8e8894cba25b26e633cc87d8e37a
+  telemetry_limits:
+    critical: red
+    warning: yellow
+bindings:
+  - id: payload-active
+    sources:
+      - domain: telemetry
+        id: payload.acquisition.active
+    config:
+      kind: telemetry
+      host_component: Reference.PayloadMonitor
+      host_instance: payloadMonitor
+      symbol: OF_AcquisitionActive
+      local_id: 16
+      update: on_change
+
+  - id: payload-start
+    sources:
+      - domain: commands
+        id: payload.start_acquisition
+    config:
+      kind: command
+      host_component: Reference.PayloadController
+      host_instance: payloadController
+      symbol: OF_StartAcquisition
+      local_opcode: 32
+      command_kind: async
+      priority: 0
+      queue_full_behavior: drop
+
+  - id: payload-stop
+    sources:
+      - domain: commands
+        id: payload.stop_acquisition
+    config:
+      kind: command
+      host_component: Reference.PayloadController
+      host_instance: payloadController
+      symbol: OF_StopAcquisition
+      local_opcode: 33
+      command_kind: async
+      priority: 0
+      queue_full_behavior: drop
+
+  - id: payload-started
+    sources:
+      - domain: events
+        id: payload.acquisition_started
+    config:
+      kind: event
+      host_component: Reference.PayloadController
+      host_instance: payloadController
+      symbol: OF_AcquisitionStarted
+      local_id: 48
+      severity: activity_high
+
+  - id: payload-stopped
+    sources:
+      - domain: events
+        id: payload.acquisition_stopped
+    config:
+      kind: event
+      host_component: Reference.PayloadController
+      host_instance: payloadController
+      symbol: OF_AcquisitionStopped
+      local_id: 49
+      severity: activity_high
+
+  - id: payload-status-packet
+    sources:
+      - domain: packets
+        id: payload_status
+    config:
+      kind: packet
+      packet_set: ReferencePackets
+      packet_name: OF_PayloadStatus
+      packet_id: 100
+      group: 1
