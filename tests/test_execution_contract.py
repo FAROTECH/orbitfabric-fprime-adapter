@@ -240,6 +240,21 @@ def test_canonical_execution_produces_core_conformant_result(tmp_path: Path) -> 
     assert projection.artifacts
     assert (output_dir / "integration_result.json").is_file()
 
+    resolutions = result["resolutions"]
+    assert resolutions
+    assert {item["origin"] for item in resolutions} == {"profile"}
+    assert {
+        (item["binding"], item["property"], item["value"])
+        for item in resolutions
+        if item["property"] in {"local_id", "local_opcode", "packet_id"}
+    } == {
+        ("tm.temperature", "local_id", 16),
+        ("cmd.set_mode", "local_opcode", 32),
+        ("evt.mode_changed", "local_id", 48),
+        ("packet.hk", "packet_id", 100),
+    }
+    assert all("resolved_id" not in item["property"] for item in resolutions)
+
 
 def test_tampered_surface_is_rejected(tmp_path: Path) -> None:
     manifest_path = _input_set(tmp_path / "input")
