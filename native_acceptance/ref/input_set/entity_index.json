@@ -1,0 +1,11 @@
+{
+  "index_version": "0.1",
+  "kind": "orbitfabric.entity_index",
+  "mission": {"id": "fprime-poc", "name": "FPrime PoC Mission", "model_version": "0.1.0"},
+  "entities": [
+    {"domain": "commands", "id": "poc.payload.set_mode", "entity_type": "command", "source_file": "commands.yaml"},
+    {"domain": "events", "id": "poc.payload.mode_changed", "entity_type": "event", "source_file": "events.yaml"},
+    {"domain": "packets", "id": "housekeeping.fast", "entity_type": "packet", "source_file": "packets.yaml"},
+    {"domain": "telemetry", "id": "poc.payload.temperature_c", "entity_type": "telemetry", "source_file": "telemetry.yaml"}
+  ]
+}
