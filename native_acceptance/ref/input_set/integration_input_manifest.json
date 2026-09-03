@@ -1,0 +1,64 @@
+{
+  "kind": "orbitfabric.integration_input_set",
+  "input_set_version": "0.1-candidate",
+  "orbitfabric_version": "1.2.0",
+  "mission": {
+    "id": "fprime-poc",
+    "model_version": "0.1.0"
+  },
+  "load_result": "loaded",
+  "lint_result": "passed",
+  "surfaces": [
+    {
+      "role": "entity_index",
+      "requirement": "required",
+      "status": "available",
+      "kind": "orbitfabric.entity_index",
+      "format_version": "0.1",
+      "path": "entity_index.json",
+      "sha256": "d4a11b36595aa94a79c573409730f486073508455ce2252873a5021b09e0239e",
+      "unavailable_reason": null
+    },
+    {
+      "role": "lint_report",
+      "requirement": "required",
+      "status": "available",
+      "kind": "orbitfabric-lint",
+      "format_version": "v1",
+      "path": "lint_report.json",
+      "sha256": "6c4ec489e3e6d597fbbbbda94d2a5fa6428cf2284661366f61205f5469b343f9",
+      "unavailable_reason": null
+    },
+    {
+      "role": "mission_snapshot",
+      "requirement": "required",
+      "status": "available",
+      "kind": "orbitfabric.mission_snapshot",
+      "format_version": "0.1-candidate",
+      "path": "mission_snapshot.json",
+      "sha256": "0100b24746c963b56353f9df59bc40f148eefe3914cfe389a6100566c55b064e",
+      "unavailable_reason": null
+    },
+    {
+      "role": "model_summary",
+      "requirement": "companion",
+      "status": "available",
+      "kind": "orbitfabric.model_summary",
+      "format_version": "0.1",
+      "path": "model_summary.json",
+      "sha256": "ad8a568bcac8ed865814f53b2531306ac19a53bcb2c14f468cec61418e9c9db3",
+      "unavailable_reason": null
+    },
+    {
+      "role": "relationship_manifest",
+      "requirement": "required",
+      "status": "available",
+      "kind": "orbitfabric.relationship_manifest",
+      "format_version": "0.1-candidate",
+      "path": "relationship_manifest.json",
+      "sha256": "481e38eeddd700e12bc627fe89994ec292ee3645d66fc0e14e0144bc7b28f90f",
+      "unavailable_reason": null
+    }
+  ],
+  "input_set_sha256": "a49e292dffae675a7eb39ca462c7c3dd6d06682a28f53d13b2dd3c803cfd4139"
+}

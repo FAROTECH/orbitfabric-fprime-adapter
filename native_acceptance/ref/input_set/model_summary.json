@@ -1,0 +1,6 @@
+{
+  "summary_version": "0.1",
+  "kind": "orbitfabric.model_summary",
+  "mission": {"id": "fprime-poc", "model_version": "0.1.0"},
+  "domains": {}
+}

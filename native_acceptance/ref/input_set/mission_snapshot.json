@@ -1,0 +1,97 @@
+{
+  "snapshot_version": "0.1-candidate",
+  "kind": "orbitfabric.mission_snapshot",
+  "result": "loaded",
+  "mission": {
+    "id": "fprime-poc",
+    "name": "FPrime PoC Mission",
+    "model_version": "0.1.0"
+  },
+  "boundaries": {
+    "source_of_truth": "mission_model",
+    "core_derived_report": true,
+    "read_only": true
+  },
+  "model": {
+    "spacecraft": {
+      "id": "fprime-poc",
+      "name": "FPrime PoC Mission",
+      "class": "synthetic",
+      "model_version": "0.1.0"
+    },
+    "subsystems": [
+      {"id": "payload", "name": "Payload", "type": "payload", "criticality": "medium"}
+    ],
+    "modes": {"NOMINAL": {"description": "Nominal", "initial": true}},
+    "mode_transitions": [],
+    "telemetry": [
+      {
+        "id": "poc.payload.temperature_c",
+        "name": "Payload temperature",
+        "type": "float32",
+        "unit": "degC",
+        "source": "payload",
+        "sampling": "1 Hz",
+        "criticality": "high",
+        "persistence": "store_and_downlink",
+        "downlink_priority": "high",
+        "limits": {
+          "warning_low": -10.0,
+          "critical_low": -20.0,
+          "warning_high": 60.0,
+          "critical_high": 75.0
+        },
+        "quality": {"required": true, "default": "valid"},
+        "description": "Synthetic temperature channel"
+      }
+    ],
+    "commands": [
+      {
+        "id": "poc.payload.set_mode",
+        "target": "payload",
+        "description": "Set synthetic payload mode",
+        "arguments": [
+          {"name": "mode", "type": "uint32", "min": 0, "max": 3, "description": "Synthetic mode selector"}
+        ],
+        "allowed_modes": ["NOMINAL"],
+        "preconditions": null,
+        "requires_ack": true,
+        "timeout_ms": 1000,
+        "risk": "low",
+        "emits": ["poc.payload.mode_changed"],
+        "expected_effects": {}
+      }
+    ],
+    "events": [
+      {
+        "id": "poc.payload.mode_changed",
+        "source": "payload",
+        "severity": "info",
+        "description": "Synthetic mode changed",
+        "downlink_priority": "medium",
+        "persistence": "store_and_downlink"
+      }
+    ],
+    "faults": [],
+    "packets": [
+      {
+        "id": "housekeeping.fast",
+        "name": "Fast housekeeping",
+        "type": "binary_compact",
+        "max_payload_bytes": 128,
+        "period": "1s",
+        "telemetry": ["poc.payload.temperature_c"],
+        "description": "Synthetic packet"
+      }
+    ],
+    "policies": {
+      "persistence": {"allowed_values": ["none", "store", "downlink_only", "store_and_downlink"]},
+      "downlink_priority": {"allowed_values": ["low", "medium", "high", "critical"]},
+      "command_risk": {"allowed_values": ["low", "medium", "high", "critical"]}
+    },
+    "payloads": [],
+    "data_products": [],
+    "contacts": {"contact_profiles": [], "link_profiles": [], "contact_windows": [], "downlink_flows": []},
+    "commandability": {"sources": [], "rules": [], "autonomous_actions": [], "recovery_intents": []}
+  }
+}
