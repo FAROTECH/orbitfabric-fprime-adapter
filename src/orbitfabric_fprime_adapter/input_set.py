@@ -190,8 +190,10 @@ def load_input_set(manifest_path: Path) -> LoadedInputSet:
         raise InputSetError("entity index kind mismatch")
     if relationships.get("kind") != "orbitfabric.relationship_manifest":
         raise InputSetError("relationship manifest kind mismatch")
-    if lint.get("kind") != "orbitfabric-lint":
-        raise InputSetError("lint report kind mismatch")
+    if lint.get("tool") != "orbitfabric-lint":
+        raise InputSetError("lint report tool mismatch")
+    if lint.get("result") != manifest.get("lint_result"):
+        raise InputSetError("lint report result does not match input-set manifest")
 
     return LoadedInputSet(
         root=root,

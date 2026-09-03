@@ -36,9 +36,13 @@ def _input_set(root: Path) -> Path:
             ],
         },
         "lint_report": {
-            "kind": "orbitfabric-lint",
+            "tool": "orbitfabric-lint",
             "version": "1.2.0",
-            "status": "passed",
+            "mission": "fprime-contract-test",
+            "model_version": "0.1.0",
+            "result": "passed",
+            "loaded": {},
+            "summary": {"errors": 0, "warnings": 0, "info": 0},
             "findings": [],
         },
         "mission_snapshot": {
@@ -267,6 +271,28 @@ def test_tampered_surface_is_rejected(tmp_path: Path) -> None:
         assert "SHA-256 mismatch" in str(exc)
     else:
         raise AssertionError("tampered Core surface was accepted")
+
+
+def test_lint_report_tool_must_match_core_contract(tmp_path: Path) -> None:
+    manifest_path = _input_set(tmp_path / "input")
+    lint_path = manifest_path.parent / "lint_report.json"
+    lint = json.loads(lint_path.read_text(encoding="utf-8"))
+    lint["tool"] = "other-linter"
+    digest = _write_json(lint_path, lint)
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    for surface in manifest["surfaces"]:
+        if surface["role"] == "lint_report":
+            surface["sha256"] = digest
+    manifest["input_set_sha256"] = compute_input_set_sha256(manifest)
+    _write_json(manifest_path, manifest)
+
+    try:
+        load_input_set(manifest_path)
+    except InputSetError as exc:
+        assert "lint report tool mismatch" in str(exc)
+    else:
+        raise AssertionError("unexpected lint report producer was accepted")
 
 
 def test_profile_source_must_resolve_in_entity_index(tmp_path: Path) -> None:

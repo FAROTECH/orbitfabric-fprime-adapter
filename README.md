@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Development status:** `0.1.0.dev0`. Product identity, the initial F Prime projection contract and canonical Core Integration Input Set execution are established. Target-native F Prime acceptance is still in progress. There is no stable public release yet.
+> **Development status:** `0.1.0.dev0`. Product identity, Core Integration Input Set execution, FPP projection and exact-lane native static acceptance are established. Consumer Reference Example acceptance is in progress. There is no stable public release yet.
 
 ## Why this boundary exists
 
@@ -54,16 +54,30 @@ See [Core input and result boundary](docs/core-input-and-result.md).
 
 ## Target lane
 
-The initial candidate compatibility lane is exact:
+The initial compatibility lane is exact:
 
 ```text
 F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
 FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-This pair is selected from historical native evidence. The canonical adapter has not yet re-established native acceptance, so no F Prime version range is currently claimed.
+Canonical CI has observed this lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build` and generated dictionary conformance. No broader F Prime version range is currently claimed.
 
 See [Target compatibility](docs/target-compatibility.md).
+
+## Reference Example
+
+The consumer-facing Reference Example demonstrates a central architectural property:
+
+```text
+one stable OrbitFabric mission contract
+    -> Profile A -> monolithic F Prime placement
+    -> Profile B -> split F Prime placement
+```
+
+The OrbitFabric source identities remain unchanged while the explicit F Prime host components and instances evolve. The example uses the exact accepted OrbitFabric Core baseline and verifies the dual projection through the installed adapter product path.
+
+See [Stable Mission Contract, Evolving F Prime Architecture](examples/reference-contract-evolution/README.md).
 
 ## Integration Coverage
 
@@ -105,6 +119,7 @@ The exact OrbitFabric Core conformance baseline used by CI is pinned in `.github
 - [Core input and result boundary](docs/core-input-and-result.md)
 - [Architecture and ownership](docs/architecture-and-ownership.md)
 - [Target compatibility](docs/target-compatibility.md)
+- [Reference Example](examples/reference-contract-evolution/README.md)
 - [Integration Coverage](coverage/integration-coverage.md)
 - [Development and verification](docs/development.md)
 
