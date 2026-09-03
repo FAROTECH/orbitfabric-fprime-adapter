@@ -42,6 +42,7 @@ nav:
   - Home: index.md
   - Product contract: product-contract.md
   - F Prime Projection Profile: projection-profile.md
+  - Core input and Integration Result: core-input-and-result.md
   - Architecture and ownership: architecture-and-ownership.md
   - Target compatibility: target-compatibility.md
   - Integration Coverage: integration-coverage.md
