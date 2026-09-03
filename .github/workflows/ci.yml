@@ -125,6 +125,56 @@ jobs:
           path: .native-static-work/evidence
           if-no-files-found: warn
 
+  native-runtime:
+    needs: native-static
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout adapter
+        uses: actions/checkout@v4
+
+      - name: Checkout exact F Prime source
+        uses: actions/checkout@v4
+        with:
+          repository: nasa/fprime
+          ref: 8a62e455a90b6d4f498c332d45d65a2a819988d8
+          path: _native/fprime
+          submodules: recursive
+
+      - name: Checkout exact FPP source
+        uses: actions/checkout@v4
+        with:
+          repository: nasa/fpp
+          ref: 93f484b7521a8e8894cba25b26e633cc87d8e37a
+          path: _native/fpp
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install official pinned toolchain and adapter wheel
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+          python -m pip install -r ./_native/fprime/requirements.txt
+          test "$(git -C ./_native/fpp rev-list -n 1 v3.2.0)" = "93f484b7521a8e8894cba25b26e633cc87d8e37a"
+          python -m build --wheel
+          python -m pip install --force-reinstall dist/*.whl
+
+      - name: Run canonical GDS closed-loop acceptance
+        run: bash native_acceptance/run_runtime.sh "$PWD/_native/fprime" "$PWD/_native/fpp" "$PWD/.native-runtime-work"
+
+      - name: Upload native runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fprime-native-runtime-acceptance
+          path: .native-runtime-work/evidence
+          if-no-files-found: warn
+
   reference-example:
     needs: checks
     runs-on: ubuntu-latest
@@ -207,7 +257,7 @@ jobs:
   release-proof:
     needs:
       - installed-lifecycle
-      - native-static
+      - native-runtime
       - reference-example
     runs-on: ubuntu-latest
 
