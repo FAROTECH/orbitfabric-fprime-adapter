@@ -85,7 +85,11 @@ if ! kill -0 "${GDS_PID}" 2>/dev/null; then
 fi
 
 printf '%s\n' "==> Execute GDS closed-loop acceptance"
-cd "${ROOT}"
+# Run from the materialized F Prime deployment so the official pytest fixture
+# can discover settings.ini and the deployment artifacts through F Prime's
+# normal project-location rules. The test itself remains external to the
+# fixture and exercises only the live GDS API.
+cd "${DEPLOYMENT}"
 if ! pytest -q "${ROOT}/native_acceptance/runtime/test_ref_projection_runtime.py" \
   --junitxml="${JUNIT}"; then
   echo "error: F Prime GDS closed-loop test failed" >&2
