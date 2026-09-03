@@ -371,7 +371,7 @@
           "$ref": "#/$defs/fppQualifiedIdentifier"
         },
         "host_instance": {
-          "$ref": "#/$defs/fppSymbol"
+          "$ref": "#/$defs/fppQualifiedIdentifier"
         },
         "symbol": {
           "$ref": "#/$defs/fppSymbol"
@@ -407,7 +407,7 @@
           "$ref": "#/$defs/fppQualifiedIdentifier"
         },
         "host_instance": {
-          "$ref": "#/$defs/fppSymbol"
+          "$ref": "#/$defs/fppQualifiedIdentifier"
         },
         "symbol": {
           "$ref": "#/$defs/fppSymbol"
@@ -490,7 +490,7 @@
           "$ref": "#/$defs/fppQualifiedIdentifier"
         },
         "host_instance": {
-          "$ref": "#/$defs/fppSymbol"
+          "$ref": "#/$defs/fppQualifiedIdentifier"
         },
         "symbol": {
           "$ref": "#/$defs/fppSymbol"
