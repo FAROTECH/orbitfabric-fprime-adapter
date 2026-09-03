@@ -1,0 +1,27 @@
+fprime_version: "v4.2.2"
+deployment_name: Ref.Ref
+entities:
+  commands:
+    - source_id: poc.payload.set_mode
+      name: Ref.pingRcvr.OF_SetMode
+      command_kind: async
+      absolute_opcode: 268451872
+  events:
+    - source_id: poc.payload.mode_changed
+      name: Ref.pingRcvr.OF_ModeChanged
+      severity: ACTIVITY_HI
+      absolute_id: 268451888
+  telemetry:
+    - source_id: poc.payload.temperature_c
+      name: Ref.pingRcvr.OF_Temperature
+      type: F32
+      update: always
+      absolute_id: 268451856
+packets:
+  - source_id: housekeeping.fast
+    packet_set: RefPackets
+    name: OF_HousekeepingFast
+    id: 100
+    group: 1
+    members:
+      - Ref.pingRcvr.OF_Temperature
