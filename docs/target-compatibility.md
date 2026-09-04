@@ -55,7 +55,9 @@ command completion = OK
 
 The synthetic mode-to-temperature behavior belongs only to the acceptance fixture. It is not OrbitFabric mission semantics and is not generated runtime behavior owned by the adapter.
 
-The exact lane therefore has canonical static and runtime acceptance for the current development source.
+The Reference Example adds a separate native architecture-evolution proof. One stable Core Integration Input Set is projected through two explicit F Prime Profiles. Both monolithic and split placements pass native F Prime generation and build, both generated dictionaries resolve the projected entities, packet membership follows telemetry placement, and the OrbitFabric source identity set remains unchanged while F Prime resolved identity evolves with the Profile.
+
+The exact lane therefore has canonical static acceptance, generated dictionary conformance, GDS runtime acceptance and native two-layout Reference Example acceptance for the current development source.
 
 ## Version policy for v0.1.0
 
