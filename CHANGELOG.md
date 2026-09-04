@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.1.1
+
+### Fixed
+
+- Aligned the Adapter Source Coordinate encoded in release metadata with the documented canonical product identity.
+- Bound release bundle generation and publication verification to the canonical product identity so release metadata cannot drift from the adapter identity constants.
+
 ### Changed
 
 - Refined public documentation after the `v0.1.0` release and external greenfield acceptance.

@@ -31,7 +31,7 @@ The required Core surface contract is declared by the canonical Integration Pack
 
 ## First projection families
 
-The `v0.1.0` surface is deliberately limited to:
+The `0.1` product surface is deliberately limited to:
 
 - telemetry declarations;
 - command declarations;

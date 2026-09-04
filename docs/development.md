@@ -48,15 +48,15 @@ CI has observed generation, build, generated dictionary conformance and GDS clos
 
 ## Version discipline
 
-The current product version is:
+The current source version is:
 
 ```text
-0.1.0
+0.1.1
 ```
 
-The corresponding `v0.1.0` GitHub Release is published. Its release assets have passed published-byte verification and clean external greenfield installation/execution.
+`v0.1.0` remains the immutable first stable release. The `0.1.1` patch retains the same F Prime integration behavior while aligning release metadata with the canonical Adapter Source Coordinate.
 
-Future source development must not blur these states:
+Source development, release publication and post-publication acceptance remain distinct states:
 
 ```text
 source under development
@@ -66,4 +66,4 @@ source under development
     != external greenfield acceptance
 ```
 
-A later development version may advance beyond `0.1.0`, but documentation must always distinguish the current source state from the latest published release.
+Release tooling derives the default Source Coordinate from the adapter's canonical product identity. CI verifies that generated release material preserves that exact structured identity before the release publication pipeline can publish it.

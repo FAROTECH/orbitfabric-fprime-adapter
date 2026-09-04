@@ -25,27 +25,31 @@ python -m build --wheel
 wheel="$(realpath "$(find "$root/dist" -maxdepth 1 -name '*.whl' -print -quit)")"
 test -n "$wheel"
 
+source_coordinate="$(PYTHONPATH="$root/src" python - <<'PY'
+from orbitfabric_fprime_adapter.constants import SOURCE_COORDINATE
+
+print(
+    f"{SOURCE_COORDINATE['authority']}:"
+    f"{SOURCE_COORDINATE['publisher']}/{SOURCE_COORDINATE['name']}"
+)
+PY
+)"
+
 python tools/build_release_bundle.py \
   --wheel "$wheel" \
-  --authority github.com \
-  --publisher FAROTECH \
-  --name orbitfabric/fprime \
   --output-dir "$release_dir"
 
 descriptor="$release_dir/adapter-release.json"
 lock="$release_dir/adapter-project-lock.json"
 
-python - <<PY
+PYTHONPATH="$root/src" python - <<PY
 from orbitfabric.adapter_manager import ProjectLockService
 from orbitfabric.conformance.adapter_release import load_release_descriptor
+from orbitfabric_fprime_adapter.constants import SOURCE_COORDINATE, VERSION
 
 release = load_release_descriptor("$descriptor")
-assert release["source_coordinate"] == {
-    "authority": "github.com",
-    "publisher": "FAROTECH",
-    "name": "orbitfabric/fprime",
-}
-assert release["release_version"] == "0.1.0"
+assert release["source_coordinate"] == SOURCE_COORDINATE
+assert release["release_version"] == VERSION
 ProjectLockService().load("$lock")
 PY
 
@@ -55,15 +59,29 @@ cp "$release_dir/SHA256SUMS" "$evidence/SHA256SUMS"
 
 python tools/build_release_bundle.py \
   --wheel "$wheel" \
-  --authority github.com \
-  --publisher FAROTECH \
-  --name orbitfabric/fprime \
   --release-only \
   --output-dir "$publisher_release_dir"
 
 test -f "$publisher_release_dir/adapter-release.json"
 test -f "$publisher_release_dir/SHA256SUMS"
 test ! -e "$publisher_release_dir/adapter-project-lock.json"
+
+PYTHONPATH="$root/src" python - <<PY
+from pathlib import Path
+
+from orbitfabric.conformance.adapter_release import load_release_descriptor
+from orbitfabric_fprime_adapter.constants import SOURCE_COORDINATE, VERSION
+
+release_dir = Path("$publisher_release_dir")
+release = load_release_descriptor(release_dir / "adapter-release.json")
+assert release["source_coordinate"] == SOURCE_COORDINATE
+assert release["release_version"] == VERSION
+
+lines = (release_dir / "SHA256SUMS").read_text(encoding="utf-8").splitlines()
+assert len(lines) == 2
+assert any(line.endswith("  " + Path("$wheel").name) for line in lines)
+assert any(line.endswith("  adapter-release.json") for line in lines)
+PY
 
 mkdir -p "$evidence/publisher-release"
 cp "$publisher_release_dir/adapter-release.json" \
@@ -94,7 +112,7 @@ assert report["adapters"][0]["status"] == "MISSING"
 PY
 
 orbitfabric adapter lock install "$lock" \
-  --source-coordinate "github.com:FAROTECH/orbitfabric/fprime" \
+  --source-coordinate "$source_coordinate" \
   --release-descriptor "$descriptor" \
   --artifact "$wheel" \
   --json | tee "$evidence/install-from-lock.json"
@@ -128,7 +146,7 @@ assert report["adapters"][0]["status"] == "MATCH"
 PY
 
 orbitfabric adapter lock install "$lock" \
-  --source-coordinate "github.com:FAROTECH/orbitfabric/fprime" \
+  --source-coordinate "$source_coordinate" \
   --release-descriptor "$descriptor" \
   --artifact "$wheel" \
   --json | tee "$evidence/second-install-from-lock.json"

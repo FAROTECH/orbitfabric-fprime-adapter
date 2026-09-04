@@ -167,7 +167,7 @@ def main() -> int:
     proof = {
         "kind": "orbitfabric.fprime.reference_contract_evolution",
         "version": "0.1",
-        "adapter_version": "0.1.0",
+        "adapter_version": "0.1.1",
         "status": "passed",
         "mission": result_a["mission"],
         "core_input_set_sha256": result_a["inputs"]["core_input_set"]["sha256"],

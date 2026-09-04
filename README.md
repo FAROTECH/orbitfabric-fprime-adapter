@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP declaration fragments while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Release status:** `v0.1.0` is published as a stable GitHub Release. The published wheel and release descriptor have passed published-byte verification, clean external greenfield installation and execution, exact-lane native F Prime generation/build/dictionary acceptance, and canonical GDS closed-loop runtime acceptance.
+> **Release baseline:** `0.1.1`. This patch preserves the accepted F Prime/FPP behavior of the `0.1` line and aligns Adapter Source Coordinate metadata with the canonical product identity.
 
 ## Choose your path
 
@@ -67,7 +67,7 @@ Start with **[Development and verification](docs/development.md)**.
 
 ## What the adapter does
 
-The `0.1.0` product baseline consumes the public OrbitFabric Core Integration Input Set and supports one deliberately narrow operation:
+The `0.1` product line consumes the public OrbitFabric Core Integration Input Set and supports one deliberately narrow operation:
 
 ```text
 fpp_contract_projection
@@ -129,7 +129,7 @@ See [Core input and result boundary](docs/core-input-and-result.md).
 
 ## Validated target lane
 
-The initial compatibility lane is exact:
+The compatibility lane remains exact:
 
 ```text
 F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
@@ -142,7 +142,7 @@ See [Target compatibility](docs/target-compatibility.md).
 
 ## Evidence model
 
-The stable release is backed by independent layers rather than one aggregate test:
+The release line is backed by independent layers rather than one aggregate test:
 
 ```text
 Core contract conformance
@@ -166,7 +166,7 @@ Core conformance does not substitute for downstream-native acceptance, and nativ
 
 ## Integration Coverage
 
-The initial semantic matrix is explicit about partial representation and unsupported semantics. OrbitFabric fields that do not have an equivalent FPP declaration meaning are preserved as upstream semantics rather than silently converted into F Prime behavior.
+The semantic matrix is explicit about partial representation and unsupported semantics. OrbitFabric fields that do not have an equivalent FPP declaration meaning are preserved as upstream semantics rather than silently converted into F Prime behavior.
 
 See [Integration Coverage](coverage/integration-coverage.md).
 
@@ -179,8 +179,7 @@ console command             orbitfabric-fprime
 adapter / integration id    orbitfabric-fprime
 logical key                 orbitfabric/fprime
 source coordinate           github.com/FAROTECH:orbitfabric/fprime
-version                     0.1.0
-release                     v0.1.0 published
+version                     0.1.1
 ```
 
 ## Documentation
@@ -202,8 +201,8 @@ release                     v0.1.0 published
 
 ### Release
 
+- [0.1.1 release notes](docs/releases/0.1.1.md)
 - [0.1.0 release notes](docs/releases/0.1.0.md)
-- [GitHub Release v0.1.0](https://github.com/FAROTECH/orbitfabric-fprime-adapter/releases/tag/v0.1.0)
 
 ## F Prime project relationship
 

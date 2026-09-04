@@ -26,13 +26,22 @@ test -n "$wheel"
 
 python tools/build_release_bundle.py \
   --wheel "$wheel" \
-  --authority github.com \
-  --publisher FAROTECH \
-  --name orbitfabric/fprime \
   --output-dir "$release_dir"
 
 descriptor="$release_dir/adapter-release.json"
 descriptor_sha="$(sha256sum "$descriptor" | awk '{print $1}')"
+
+PYTHONPATH="$root/src" DESCRIPTOR="$descriptor" python - <<'PY'
+import json
+import os
+from pathlib import Path
+
+from orbitfabric_fprime_adapter.constants import SOURCE_COORDINATE, VERSION
+
+descriptor = json.loads(Path(os.environ["DESCRIPTOR"]).read_text(encoding="utf-8"))
+assert descriptor["source_coordinate"] == SOURCE_COORDINATE
+assert descriptor["release_version"] == VERSION
+PY
 
 cp "$descriptor" "$evidence/release-descriptor.json"
 sha256sum "$wheel" > "$evidence/adapter-wheel.sha256"
@@ -89,7 +98,7 @@ for name in (
 PY
 
 "$EXECUTABLE" --version | tee "$evidence/console-version.txt"
-grep -Fxq "orbitfabric-fprime 0.1.0" "$evidence/console-version.txt"
+grep -Fxq "orbitfabric-fprime 0.1.1" "$evidence/console-version.txt"
 
 orbitfabric adapter remove "$INSTANCE_ID" --json | tee "$evidence/remove.json"
 orbitfabric adapter list --json | tee "$evidence/final-inventory.json"

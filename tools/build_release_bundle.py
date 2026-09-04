@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import runpy
 import tomllib
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,26 @@ def project_version(pyproject_path: Path) -> str:
     if not isinstance(version, str) or not version:
         raise ValueError("pyproject.toml must define a non-empty project.version")
     return version
+
+
+def canonical_source_coordinate(root: Path) -> dict[str, str]:
+    constants_path = root / "src" / "orbitfabric_fprime_adapter" / "constants.py"
+    if not constants_path.is_file():
+        raise ValueError(f"Canonical adapter identity file does not exist: {constants_path}")
+
+    payload = runpy.run_path(str(constants_path))
+    coordinate = payload.get("SOURCE_COORDINATE")
+    if not isinstance(coordinate, dict):
+        raise ValueError("SOURCE_COORDINATE must be a mapping")
+
+    required = ("authority", "publisher", "name")
+    result: dict[str, str] = {}
+    for key in required:
+        value = coordinate.get(key)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"SOURCE_COORDINATE.{key} must be a non-empty string")
+        result[key] = value.strip()
+    return result
 
 
 def build_release_descriptor(
@@ -117,9 +138,18 @@ def parser() -> argparse.ArgumentParser:
         )
     )
     result.add_argument("--wheel", type=Path, required=True)
-    result.add_argument("--authority", required=True)
-    result.add_argument("--publisher", required=True)
-    result.add_argument("--name", required=True)
+    result.add_argument(
+        "--authority",
+        help="Override the canonical Adapter Source Coordinate authority.",
+    )
+    result.add_argument(
+        "--publisher",
+        help="Override the canonical Adapter Source Coordinate publisher.",
+    )
+    result.add_argument(
+        "--name",
+        help="Override the canonical Adapter Source Coordinate name.",
+    )
     result.add_argument("--output-dir", type=Path, default=Path("generated/release"))
     result.add_argument("--manifest", type=Path)
     result.add_argument("--pyproject", type=Path, default=Path("pyproject.toml"))
@@ -149,11 +179,16 @@ def main(argv: list[str] | None = None) -> int:
     if not manifest.is_file():
         raise SystemExit(f"Integration Package Manifest does not exist: {manifest}")
 
+    canonical_coordinate = canonical_source_coordinate(root)
+    authority = args.authority or canonical_coordinate["authority"]
+    publisher = args.publisher or canonical_coordinate["publisher"]
+    name = args.name or canonical_coordinate["name"]
     version = args.release_version or project_version(args.pyproject)
+
     required_values = [
-        ("authority", args.authority),
-        ("publisher", args.publisher),
-        ("name", args.name),
+        ("authority", authority),
+        ("publisher", publisher),
+        ("name", name),
         ("release version", version),
         ("artifact id", args.artifact_id),
         ("artifact type", args.artifact_type),
@@ -168,9 +203,9 @@ def main(argv: list[str] | None = None) -> int:
     descriptor = build_release_descriptor(
         wheel=wheel,
         manifest=manifest,
-        authority=args.authority.strip(),
-        publisher=args.publisher.strip(),
-        name=args.name.strip(),
+        authority=authority.strip(),
+        publisher=publisher.strip(),
+        name=name.strip(),
         release_version=version.strip(),
         artifact_id=args.artifact_id.strip(),
         artifact_type=args.artifact_type.strip(),
