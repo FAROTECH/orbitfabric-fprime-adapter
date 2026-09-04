@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "orbitfabric-fprime-adapter"
-version = "0.1.0"
+version = "0.1.1"
 description = "OrbitFabric adapter for projecting mission contracts into F Prime (F´) FPP artifacts with explicit target bindings and downstream-native validation."
 readme = "README.md"
 requires-python = ">=3.11"

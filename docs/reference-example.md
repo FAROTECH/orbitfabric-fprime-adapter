@@ -14,7 +14,7 @@ The upstream OrbitFabric entity identities remain unchanged. The F Prime compone
 
 ## What the example proves
 
-The accepted `0.1.0` example requires:
+The accepted `0.1` example requires:
 
 - the same OrbitFabric mission identity across both layouts;
 - the same Core Integration Input Set across both layouts;

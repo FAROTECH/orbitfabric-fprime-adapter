@@ -1,8 +1,8 @@
 # F Prime Adapter Integration Coverage
 
-Status: **stable `0.1.0` release published; exact-lane native acceptance, published-byte verification and external greenfield acceptance complete.**
+Status: **`0.1` semantic baseline accepted; `0.1.1` preserves the same integration surface and exact downstream lane.**
 
-This matrix defines the semantic denominator for the first maintained OrbitFabric F Prime adapter. It records what is meaningful for F Prime, what the first product projects, and where OrbitFabric semantics intentionally remain outside the FPP declaration surface.
+This matrix defines the semantic denominator for the maintained OrbitFabric F Prime adapter. It records what is meaningful for F Prime, what the product projects, and where OrbitFabric semantics intentionally remain outside the FPP declaration surface.
 
 It is not a measure of how much of F Prime is supported. It is also not a Core conformance contract.
 
@@ -17,14 +17,14 @@ OrbitFabric mission contract
     -> F Prime toolchain as downstream authority
 ```
 
-The first release does not generate F Prime components, instances, topology, scheduling or runtime behavior.
+The `0.1` line does not generate F Prime components, instances, topology, scheduling or runtime behavior.
 
 ## Status vocabulary
 
 - `FULL`: the applicable OrbitFabric semantic area has a direct target representation for the declared adapter claim.
 - `PARTIAL`: a meaningful target representation exists, but some OrbitFabric semantics remain outside that representation or require explicit target policy.
 - `TARGET_UNSUPPORTED`: the target has no generic equivalent for the OrbitFabric semantic claim considered here.
-- `OUT_OF_SCOPE`: a target-specific mapping could be investigated, but the first adapter release deliberately does not promise it.
+- `OUT_OF_SCOPE`: a target-specific mapping could be investigated, but the current adapter line deliberately does not promise it.
 - `NOT_ANALYZED`: no product disposition has yet been reached.
 - `NOT_APPLICABLE`: treating the OrbitFabric concept as the proposed target concept would be a category error for this adapter.
 
@@ -50,7 +50,7 @@ The first release does not generate F Prime components, instances, topology, sch
 | Event persistence / downlink priority | no direct equivalent in the generated FPP event declaration | TARGET_UNSUPPORTED | n/a | preserve in OrbitFabric coverage diagnostics |
 | Telemetry packet membership | FPP telemetry packet specifier composed inside a project-owned packet set | PARTIAL | accepted | member identity is resolved through projected telemetry; adapter does not own the enclosing topology packet-set policy |
 | Packet type / max payload / period | no direct equivalent in the packet specifier fragment | TARGET_UNSUPPORTED | n/a | no implicit scheduling, completeness or payload policy is generated |
-| Data products | F Prime records/containers are possible candidates but are not one-to-one with OrbitFabric products | OUT_OF_SCOPE | n/a | explicitly deferred from v0.1.0 |
+| Data products | F Prime records/containers are possible candidates but are not one-to-one with OrbitFabric products | OUT_OF_SCOPE | n/a | explicitly deferred from the `0.1` line |
 | Fault / FDIR model | no single generic F Prime declaration equivalent | TARGET_UNSUPPORTED | n/a | a future integration would need concrete F Prime component/runtime semantics, not a guessed mapping |
 | OrbitFabric subsystem -> F Prime component | F Prime component architecture is project-owned | NOT_APPLICABLE | n/a | direct inference is explicitly forbidden |
 | OrbitFabric mode -> F Prime state machine | F Prime state-machine/runtime architecture is project-owned | NOT_APPLICABLE | n/a | direct inference is explicitly forbidden |
@@ -61,7 +61,7 @@ The first release does not generate F Prime components, instances, topology, sch
 
 ## Initial release interpretation
 
-The initial product intentionally centers on four projection families:
+The product intentionally centers on four projection families:
 
 ```text
 telemetry
@@ -74,7 +74,7 @@ All four remain `PARTIAL` because OrbitFabric carries mission-level semantics th
 
 ## Evidence state
 
-The stable `0.1.0` release has independently established:
+The `0.1` product line has independently established:
 
 1. projection implementation and regression coverage;
 2. Core Integration Input Set consumption, Integration Result and execution-backed Coverage;
@@ -83,8 +83,8 @@ The stable `0.1.0` release has independently established:
 5. GDS runtime closed-loop acceptance through projected command, telemetry, event and command completion;
 6. consumer Reference Example acceptance with one stable OrbitFabric contract across two F Prime placements;
 7. native two-layout Reference Example acceptance;
-8. managed Adapter Manager lifecycle and provider-neutral release proof;
-9. published release byte verification;
-10. clean external greenfield installation/execution, including native two-layout acceptance from the published product path.
+8. managed Adapter Manager lifecycle and provider-neutral release proof.
+
+`v0.1.0` additionally established published release byte verification and clean external greenfield installation/execution. `0.1.1` does not change this semantic matrix or the downstream compatibility claim; its patch scope is release identity metadata and release-control hardening.
 
 These evidence layers remain distinct. Integration Coverage describes semantic disposition; it does not replace native target acceptance, release verification or greenfield evidence.

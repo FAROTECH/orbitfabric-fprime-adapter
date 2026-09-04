@@ -16,7 +16,7 @@ same OrbitFabric mission contract
 
 The OrbitFabric entity identities do not change. The F Prime architecture is free to evolve.
 
-This example is part of the accepted `0.1.0` product surface. Both layouts have passed native F Prime generation, build and generated dictionary verification against the exact supported F Prime/FPP lane.
+This example is part of the accepted `0.1` product surface. Both layouts have passed native F Prime generation, build and generated dictionary verification against the exact supported F Prime/FPP lane.
 
 ## Upstream contract
 
@@ -106,7 +106,7 @@ The adapter does not infer a component architecture from OrbitFabric subsystems.
 
 ## Run the consumer proof
 
-Install the published adapter product and the exact Core baseline, then obtain the matching `v0.1.0` repository source only for the example files and execute:
+Install the released adapter product and the exact Core baseline, then obtain the matching `v0.1.1` repository source only for the example files and execute:
 
 ```bash
 python examples/reference-contract-evolution/verify_reference_example.py \

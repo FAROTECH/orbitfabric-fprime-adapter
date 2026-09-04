@@ -56,9 +56,6 @@ jobs:
           test -n "$wheel"
           python tools/build_release_bundle.py \
             --wheel "$wheel" \
-            --authority github.com \
-            --publisher FAROTECH \
-            --name orbitfabric/fprime \
             --release-only \
             --output-dir generated/release
 
@@ -72,20 +69,19 @@ jobs:
             cd generated/release
             sha256sum -c SHA256SUMS
           )
-          RELEASE_VERSION="$version" python - <<'PY'
+          PYTHONPATH=src RELEASE_VERSION="$version" python - <<'PY'
           import json
           import os
           from pathlib import Path
 
+          from orbitfabric_fprime_adapter.constants import SOURCE_COORDINATE, VERSION
+
           descriptor = json.loads(
               Path("generated/release/adapter-release.json").read_text(encoding="utf-8")
           )
-          assert descriptor["release_version"] == os.environ["RELEASE_VERSION"]
-          assert descriptor["source_coordinate"] == {
-              "authority": "github.com",
-              "publisher": "FAROTECH",
-              "name": "orbitfabric/fprime",
-          }
+          assert os.environ["RELEASE_VERSION"] == VERSION
+          assert descriptor["release_version"] == VERSION
+          assert descriptor["source_coordinate"] == SOURCE_COORDINATE
           assert len(descriptor["artifacts"]) == 1
           assert descriptor["artifacts"][0]["artifact_type"] == "python-wheel"
           PY
@@ -127,14 +123,18 @@ jobs:
             cd /tmp/orbitfabric-fprime-published
             sha256sum -c SHA256SUMS
           )
-          RELEASE_VERSION="$version" python - <<'PY'
+          PYTHONPATH=src RELEASE_VERSION="$version" python - <<'PY'
           import json
           import os
           from pathlib import Path
 
+          from orbitfabric_fprime_adapter.constants import SOURCE_COORDINATE, VERSION
+
           root = Path("/tmp/orbitfabric-fprime-published")
           descriptor = json.loads((root / "adapter-release.json").read_text(encoding="utf-8"))
-          assert descriptor["release_version"] == os.environ["RELEASE_VERSION"]
+          assert os.environ["RELEASE_VERSION"] == VERSION
+          assert descriptor["release_version"] == VERSION
+          assert descriptor["source_coordinate"] == SOURCE_COORDINATE
           artifact = descriptor["artifacts"][0]
           wheel = root / artifact["filename"]
           assert wheel.is_file()

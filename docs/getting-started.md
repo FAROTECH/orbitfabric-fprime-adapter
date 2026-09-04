@@ -18,19 +18,13 @@ You do **not** need to install this repository in editable mode, build a wheel o
 
 If you want to modify the adapter, use [Development and verification](development.md).
 
-## Published release
+## Release baseline
 
-`v0.1.0` is the first stable published release.
+`v0.1.1` is the current patch-release baseline.
 
-It has passed:
+It preserves the F Prime integration behavior established by the `0.1` line and aligns the Adapter Source Coordinate carried by release metadata with the canonical product identity.
 
-- published-byte verification;
-- clean external greenfield installation and execution;
-- consumer Reference Example acceptance;
-- exact-lane native F Prime generate/build/dictionary acceptance;
-- canonical GDS closed-loop runtime acceptance.
-
-The validated downstream lane is exact:
+The validated downstream lane remains exact:
 
 | System | Validated baseline |
 | --- | --- |
@@ -70,10 +64,10 @@ orbitfabric adapter list
 
 ## 3. Obtain the published adapter release assets
 
-Download these exact assets from the [GitHub Release v0.1.0](https://github.com/FAROTECH/orbitfabric-fprime-adapter/releases/tag/v0.1.0):
+For `v0.1.1`, obtain these exact assets from the matching GitHub Release:
 
 ```text
-orbitfabric_fprime_adapter-0.1.0-py3-none-any.whl
+orbitfabric_fprime_adapter-0.1.1-py3-none-any.whl
 adapter-release.json
 SHA256SUMS
 ```
@@ -93,7 +87,7 @@ From the directory containing the release assets:
 ```bash
 orbitfabric adapter install \
   adapter-release.json \
-  --artifact orbitfabric_fprime_adapter-0.1.0-py3-none-any.whl
+  --artifact orbitfabric_fprime_adapter-0.1.1-py3-none-any.whl
 ```
 
 Inspect the installed inventory:
@@ -176,7 +170,7 @@ The example proves that:
 - both layouts generate and build as native F Prime projects;
 - generated dictionaries resolve the projected downstream identities.
 
-For a released version, use the matching `v0.1.0` source archive only to access the Reference Example files and runner scripts. Keep the adapter product itself installed from the published release wheel.
+For a released version, use the matching `v0.1.1` source archive only to access the Reference Example files and runner scripts. Keep the adapter product itself installed from the published release wheel.
 
 ## Where to go next
 

@@ -1,6 +1,6 @@
 # Target compatibility
 
-The first stable F Prime adapter release claims one exact downstream lane.
+The F Prime adapter `0.1` release line claims one exact downstream lane.
 
 ## Accepted lane
 
@@ -55,16 +55,18 @@ The synthetic mode-to-temperature behavior belongs only to the acceptance fixtur
 
 The Reference Example adds a separate native architecture-evolution proof. One stable Core Integration Input Set is projected through two explicit F Prime Profiles. Both monolithic and split placements pass native F Prime generation and build, both generated dictionaries resolve the projected entities, packet membership follows telemetry placement, and the OrbitFabric source identity set remains unchanged while F Prime resolved identity evolves with the Profile.
 
-## Release and greenfield status
+## Release lineage
 
-`v0.1.0` is published as a stable GitHub Release. The published release assets have passed published-byte verification and clean external greenfield installation/execution.
+`v0.1.0` established the first published-byte and external greenfield acceptance for this exact F Prime/FPP lane.
 
-The greenfield native acceptance independently re-established the exact F Prime and FPP source commits above, generated and built both Reference Example layouts, and verified the resulting dictionaries.
+`0.1.1` preserves the same target lane and integration behavior. Its patch scope is release identity metadata and release-control hardening, not F Prime compatibility expansion.
 
-## Version policy for v0.1.0
+Release publication evidence remains separate from target compatibility evidence.
+
+## Version policy for the 0.1 line
 
 No compatibility range is claimed.
 
-The stable `0.1.0` release claims only the exact pair above. Forward compatibility, backward compatibility and other F Prime/FPP combinations remain unclaimed until separately evidenced.
+The `0.1` release line claims only the exact pair above. Forward compatibility, backward compatibility and other F Prime/FPP combinations remain unclaimed until separately evidenced.
 
 Changing the pinned downstream baseline is therefore an evidence change, not a documentation-only change.
