@@ -12,7 +12,7 @@ Start with [Getting Started](getting-started.md) for the published release and A
 
 ### I want to try the adapter
 
-Start with the [Reference Example](../examples/reference-contract-evolution/README.md). It demonstrates one stable OrbitFabric mission contract projected into two different native F Prime placements while keeping upstream source identities unchanged.
+Start with the [Reference Example](reference-example.md). It demonstrates one stable OrbitFabric mission contract projected into two different native F Prime placements while keeping upstream source identities unchanged.
 
 ### I want to develop or contribute
 
@@ -27,7 +27,7 @@ The adapter does not infer F Prime architecture from OrbitFabric structure. Targ
 ## Documentation
 
 - [Getting Started](getting-started.md)
-- [Reference Example](../examples/reference-contract-evolution/README.md)
+- [Reference Example](reference-example.md)
 - [Product contract](product-contract.md)
 - [F Prime Projection Profile](projection-profile.md)
 - [Core input and result boundary](core-input-and-result.md)
