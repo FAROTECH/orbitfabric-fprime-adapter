@@ -84,7 +84,7 @@ def component_files(project: Path, name: str, generated: Path, commands: list[st
     base_name = f"{name}ComponentBase"
     header = [
         "#pragma once",
-        f'#include "{name}ComponentAc.hpp"',
+        f"#include <Ref/Reference/{name}/{name}ComponentAc.hpp>",
         "",
         "namespace Reference {",
         f"class {impl_name} final : public {base_name} {{",
