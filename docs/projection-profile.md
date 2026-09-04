@@ -10,7 +10,7 @@ orbitfabric_fprime_adapter/schemas/profile-0.1.schema.json
 
 ## Target baseline
 
-The initial schema accepts one exact candidate downstream pair:
+The initial schema accepts one exact downstream pair:
 
 ```text
 F Prime  v4.2.2
@@ -20,7 +20,7 @@ FPP      3.2.0
 commit   93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-This is an exact candidate lane inherited from historical evidence. Canonical native acceptance is still pending and no version range is implied.
+This exact lane has canonical native generation/build/dictionary and GDS closed-loop runtime acceptance. No broader version range is implied.
 
 ## Binding model
 
@@ -119,4 +119,4 @@ telemetry_limits:
   critical: red
 ```
 
-Either source level may be `unmapped`. Canonical implementation must reject ambiguous cases where multiple source levels would map to the same FPP color on the same limit side.
+Either source level may be `unmapped`. The canonical implementation rejects ambiguous cases where multiple source levels would map to the same FPP color on the same limit side.
