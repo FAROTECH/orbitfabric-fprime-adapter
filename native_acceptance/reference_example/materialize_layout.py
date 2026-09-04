@@ -120,6 +120,16 @@ def component_files(project: Path, name: str, generated: Path, commands: list[st
     source.extend(["}  // namespace Reference", ""])
     (root / f"{impl_name}.cpp").write_text("\n".join(source), encoding="utf-8")
 
+    standardization_header = (
+        "#pragma once\n"
+        f'#include "Ref/Reference/{name}/{impl_name}.hpp"\n'
+        "\n"
+        "namespace Reference {\n"
+        f"using {name} = {impl_name};\n"
+        "}  // namespace Reference\n"
+    )
+    (root / f"{name}.hpp").write_text(standardization_header, encoding="utf-8")
+
     cmake = (
         "set(SOURCE_FILES\n"
         f'  "${{CMAKE_CURRENT_LIST_DIR}}/{name}.fpp"\n'
