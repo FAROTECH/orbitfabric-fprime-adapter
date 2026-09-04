@@ -15,4 +15,4 @@ It distinguishes:
 - what remains explicitly outside the first release;
 - what would be a category error to infer from the mission model.
 
-The initial matrix is a semantic declaration, not an implementation-completeness claim. Canonical implementation and native target evidence are tracked separately in the matrix.
+The matrix separates semantic disposition from acceptance evidence. Canonical projection, Core input/result handling, exact-lane native generation/build/dictionary conformance, GDS runtime acceptance and the consumer Reference Example are established; publication and external greenfield acceptance remain release gates.
