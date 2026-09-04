@@ -1,0 +1,154 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tagged source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build
+
+      - name: Validate tag and source version
+        id: version
+        shell: bash
+        run: |
+          python - <<'PY' | tee /tmp/release-version.env
+          import tomllib
+          from pathlib import Path
+
+          payload = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          version = payload["project"]["version"]
+          print(f"VERSION={version}")
+          PY
+          source /tmp/release-version.env
+          test "$GITHUB_REF_NAME" = "v$VERSION"
+          test -f "docs/releases/$VERSION.md"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build wheel
+        run: python -m build --wheel
+
+      - name: Build publisher release material
+        shell: bash
+        run: |
+          wheel="$(find dist -maxdepth 1 -name '*.whl' -print -quit)"
+          test -n "$wheel"
+          python tools/build_release_bundle.py \
+            --wheel "$wheel" \
+            --authority github.com \
+            --publisher FAROTECH \
+            --name orbitfabric/fprime \
+            --release-only \
+            --output-dir generated/release
+
+      - name: Verify local release material
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          wheel="$(find dist -maxdepth 1 -name '*.whl' -print -quit)"
+          cp "$wheel" generated/release/
+          (
+            cd generated/release
+            sha256sum -c SHA256SUMS
+          )
+          RELEASE_VERSION="$version" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          descriptor = json.loads(
+              Path("generated/release/adapter-release.json").read_text(encoding="utf-8")
+          )
+          assert descriptor["release_version"] == os.environ["RELEASE_VERSION"]
+          assert descriptor["source_coordinate"] == {
+              "authority": "github.com",
+              "publisher": "FAROTECH",
+              "name": "orbitfabric/fprime",
+          }
+          assert len(descriptor["artifacts"]) == 1
+          assert descriptor["artifacts"][0]["artifact_type"] == "python-wheel"
+          PY
+          test ! -e generated/release/adapter-project-lock.json
+
+      - name: Create draft GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          wheel="$(find generated/release -maxdepth 1 -name '*.whl' -print -quit)"
+          gh release create "$GITHUB_REF_NAME" \
+            "$wheel" \
+            generated/release/adapter-release.json \
+            generated/release/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --draft \
+            --title "OrbitFabric F Prime Adapter $version" \
+            --notes-file "docs/releases/$version.md"
+
+      - name: Download published bytes from draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          rm -rf /tmp/orbitfabric-fprime-published
+          mkdir -p /tmp/orbitfabric-fprime-published
+          gh release download "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir /tmp/orbitfabric-fprime-published
+
+      - name: Verify published bytes
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          (
+            cd /tmp/orbitfabric-fprime-published
+            sha256sum -c SHA256SUMS
+          )
+          RELEASE_VERSION="$version" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/orbitfabric-fprime-published")
+          descriptor = json.loads((root / "adapter-release.json").read_text(encoding="utf-8"))
+          assert descriptor["release_version"] == os.environ["RELEASE_VERSION"]
+          artifact = descriptor["artifacts"][0]
+          wheel = root / artifact["filename"]
+          assert wheel.is_file()
+          assert wheel.stat().st_size == artifact["size"]
+          PY
+
+      - name: Upload publication verification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitfabric-fprime-${{ steps.version.outputs.version }}-published-byte-proof
+          path: /tmp/orbitfabric-fprime-published
+          if-no-files-found: error
+
+      - name: Publish verified GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false
