@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -25,6 +26,20 @@ def append_before_last_brace(path: Path, block: str) -> None:
     if pos < 0:
         raise RuntimeError(f"{path}: closing brace not found")
     path.write_text(text[:pos] + block + text[pos:], encoding="utf-8")
+
+
+def telemetry_refs_in_packet_set(path: Path) -> list[str]:
+    """Collect qualified channel references from one FPP telemetry packet set."""
+    text = path.read_text(encoding="utf-8")
+    uncommented = "\n".join(line.split("#", 1)[0] for line in text.splitlines())
+    refs = re.findall(
+        r"\b[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*\b",
+        uncommented,
+    )
+    values = sorted(set(refs))
+    if not values:
+        raise RuntimeError(f"{path}: no telemetry references found")
+    return values
 
 
 def component_files(project: Path, name: str, generated: Path, commands: list[str]) -> None:
@@ -167,6 +182,7 @@ def main() -> int:
             projection / "components/Reference_PayloadComponent",
             ["OF_StartAcquisition", "OF_StopAcquisition"],
         )
+        reference_telemetry = "payload.OF_AcquisitionActive"
         add_fpp = (
             "\n  instance payload: Reference.PayloadComponent base id 0x10030000 \\\n"
             "    queue size Default.QUEUE_SIZE \\\n"
@@ -198,6 +214,7 @@ def main() -> int:
             projection / "components/Reference_PayloadMonitor",
             [],
         )
+        reference_telemetry = "payloadMonitor.OF_AcquisitionActive"
         add_fpp = (
             "\n  instance payloadController: Reference.PayloadController base id 0x10030000 \\\n"
             "    queue size Default.QUEUE_SIZE \\\n"
@@ -222,13 +239,25 @@ def main() -> int:
     packet_fragment = projection / "topology/ReferencePackets/OF_Packets.fppi"
     if not packet_fragment.is_file():
         raise RuntimeError(f"missing generated packet fragment: {packet_fragment}")
+
+    # FPP requires each telemetry packet set to account for every topology
+    # telemetry channel. The pinned Ref set must therefore explicitly omit the
+    # new Reference Example telemetry, while the new ReferencePackets set must
+    # explicitly omit all pre-existing Ref telemetry channels.
+    ref_packets = deployment / "Top/RefPackets.fppi"
+    existing_ref_telemetry = telemetry_refs_in_packet_set(ref_packets)
+    append_before_last_brace(ref_packets, f"  {reference_telemetry}\n")
+
     packet_dir = deployment / "Top/generated/ReferencePackets"
     packet_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(packet_fragment, packet_dir / "OF_Packets.fppi")
+    omit_lines = "".join(f"  {name}\n" for name in existing_ref_telemetry)
     (deployment / "Top/ReferencePackets.fppi").write_text(
         "telemetry packets ReferencePackets {\n"
         '  include "generated/ReferencePackets/OF_Packets.fppi"\n'
-        "} omit {\n}\n",
+        "} omit {\n"
+        f"{omit_lines}"
+        "}\n",
         encoding="utf-8",
     )
     replace_once(
@@ -253,6 +282,12 @@ def main() -> int:
                 "payloadMonitor",
             ]
         ),
+        "packet_set_reconciliation": {
+            "reference_telemetry": reference_telemetry,
+            "ref_packet_set_omits_reference_telemetry": True,
+            "reference_packet_set_omits_existing_ref_telemetry": True,
+            "existing_ref_telemetry_count": len(existing_ref_telemetry),
+        },
         "note": (
             "Pinned Ref is infrastructure-only evidence scaffolding; "
             "Reference.* components and placement are the acceptance subject."
