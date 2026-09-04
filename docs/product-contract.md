@@ -14,7 +14,7 @@ It does **not** create an F Prime project.
 
 ## Inputs
 
-The operation is defined around two authored inputs:
+The operation consumes:
 
 1. an OrbitFabric Core Integration Input Set;
 2. an F Prime Projection Profile conforming to `profile-0.1.schema.json`.
@@ -27,18 +27,18 @@ none
 
 A Scenario is therefore not part of this operation.
 
-The exact Core surface declaration is intentionally promoted into the Integration Package Manifest only when canonical Input Set consumption is implemented and accepted. PR2 defines the semantic contract without claiming that PR4 evidence early.
+The required Core surface contract is declared by the canonical Integration Package Manifest and is validated at execution time before projection.
 
 ## First projection families
 
-The candidate `v0.1.0` surface is deliberately limited to:
+The `v0.1.0` surface is deliberately limited to:
 
 - telemetry declarations;
 - command declarations;
 - event declarations;
 - telemetry packet specifiers.
 
-The corresponding FPP fragments are intended to be included by project-owned F Prime source.
+The corresponding FPP fragments are included by project-owned F Prime source.
 
 ## Ownership boundary
 
@@ -66,7 +66,7 @@ The adapter does not own:
 
 ## Artifact boundary
 
-Candidate adapter-produced artifacts:
+Adapter-produced artifacts are:
 
 ```text
 component-scoped FPP command include fragment(s)
