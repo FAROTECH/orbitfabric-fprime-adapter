@@ -1,8 +1,8 @@
 # Target compatibility
 
-The first F Prime adapter release starts from one exact downstream candidate lane.
+The first F Prime adapter release starts from one exact downstream lane.
 
-## Candidate lane
+## Accepted lane
 
 ```text
 F Prime
@@ -20,22 +20,49 @@ The same information is packaged in machine-readable form at:
 orbitfabric_fprime_adapter/compatibility/fprime-v4.2.2-fpp-3.2.0.json
 ```
 
-## Current evidence status
+## Canonical evidence status
 
-This pair has strong historical PoC evidence, including native generation, native build, F Prime dictionary conformance and a GDS runtime closed loop.
+The canonical adapter has re-established the historical PoC lane against the product source and installed wheel path.
 
-The canonical adapter has **not yet** re-established those target-native results. Its packaged compatibility declaration therefore uses:
+Canonical CI has observed:
 
 ```text
-status: historical_evidence_candidate
-canonical_source_acceptance: pending
-canonical_native_acceptance_gate: PR5
+adapter wheel installation
+-> fpp_contract_projection
+-> generated FPP fragments
+-> fprime-util generate
+-> fprime-util build
+-> generated F Prime dictionary conformance
+-> fprime-gds
+-> projected command
+-> projected telemetry + projected event
+-> command completion
 ```
 
-This distinction is deliberate. Historical evidence justifies selecting the lane; it does not justify claiming that the new product source has already passed it.
+The live runtime acceptance uses an evidence-only Ref fixture. It sends:
+
+```text
+Ref.pingRcvr.OF_SetMode(mode=2)
+```
+
+and observes:
+
+```text
+Ref.pingRcvr.OF_Temperature = 22.0
+Ref.pingRcvr.OF_ModeChanged
+command completion = OK
+```
+
+The synthetic mode-to-temperature behavior belongs only to the acceptance fixture. It is not OrbitFabric mission semantics and is not generated runtime behavior owned by the adapter.
+
+The Reference Example adds a separate native architecture-evolution proof. One stable Core Integration Input Set is projected through two explicit F Prime Profiles. Both monolithic and split placements pass native F Prime generation and build, both generated dictionaries resolve the projected entities, packet membership follows telemetry placement, and the OrbitFabric source identity set remains unchanged while F Prime resolved identity evolves with the Profile.
+
+The exact lane therefore has canonical static acceptance, generated dictionary conformance, GDS runtime acceptance and native two-layout Reference Example acceptance for the current development source.
 
 ## Version policy for v0.1.0
 
 No compatibility range is claimed.
 
-The first stable release must prove the exact pair above against the exact canonical source candidate that will be released. Forward and backward compatibility remain unclaimed until separately evidenced.
+The first stable release claims only the exact pair above. Forward compatibility, backward compatibility and other F Prime/FPP combinations remain unclaimed until separately evidenced.
+
+Publication and external greenfield acceptance are separate release gates. They do not change the target compatibility result established here.

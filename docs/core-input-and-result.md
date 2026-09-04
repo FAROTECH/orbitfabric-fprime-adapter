@@ -50,7 +50,7 @@ There is no raw-YAML fallback when one of these gates fails.
 
 After Core input validation, the adapter passes only the loaded Mission Snapshot model plus the validated F Prime Projection Profile to the pure projection engine.
 
-This preserves the separation introduced by PR 3:
+This preserves a strict separation:
 
 ```text
 Core contract loading and integrity
@@ -111,17 +111,16 @@ When execution fails and the output directory remains writable, the CLI writes a
 
 Failed Results do not invent Core or Profile provenance. Unknown provenance fields remain null and the integration-owned error explains the failure.
 
-## What PR 4 still does not prove
+## Downstream-native evidence
 
-This boundary does not invoke F Prime or FPP tooling.
+The Core input/result boundary itself does not invoke F Prime or FPP tooling. Downstream acceptance is established separately against the exact declared lane.
 
-Therefore it does not yet establish:
+Canonical CI has independently observed:
 
-- FPP parser acceptance;
-- `fprime-util generate` acceptance;
-- F Prime build acceptance;
-- generated dictionary conformance;
-- resolved downstream ids;
-- F Prime runtime or GDS behavior.
+- FPP generation;
+- `fprime-util generate`;
+- `fprime-util build`;
+- generated dictionary conformance and resolved downstream identity;
+- F Prime GDS closed-loop runtime behavior.
 
-Those facts must come from the exact downstream toolchain in the native acceptance gates.
+Keeping these concerns separate prevents Core conformance from being mistaken for downstream-native acceptance.
