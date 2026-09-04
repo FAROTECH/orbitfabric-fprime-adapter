@@ -15,4 +15,6 @@ It distinguishes:
 - what remains explicitly outside the first release;
 - what would be a category error to infer from the mission model.
 
-The matrix separates semantic disposition from acceptance evidence. Canonical projection, Core input/result handling, exact-lane native generation/build/dictionary conformance, GDS runtime acceptance and the consumer Reference Example are established; publication and external greenfield acceptance remain release gates.
+The matrix separates semantic disposition from acceptance evidence. For stable `v0.1.0`, canonical projection, Core input/result handling, exact-lane native generation/build/dictionary conformance, GDS runtime acceptance, the consumer and native Reference Example, published-byte verification and external greenfield acceptance are all established.
+
+Integration Coverage must therefore be read as a semantic-scope statement, not as a release-readiness score.

@@ -1,10 +1,13 @@
 # Development and verification
 
+This guide is for contributors working on the adapter source. Normal consumers should start with [Getting Started](getting-started.md).
+
 ## Local setup
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
@@ -45,10 +48,22 @@ CI has observed generation, build, generated dictionary conformance and GDS clos
 
 ## Version discipline
 
-The product source is frozen at:
+The current product version is:
 
 ```text
 0.1.0
 ```
 
-This freeze does not itself publish a stable release. Projection scope, Integration Coverage, native target acceptance, consumer Reference Example acceptance and native two-layout Reference Example acceptance are established. Publication remains blocked until immutable release bytes, published-byte verification and external greenfield installation/execution are closed.
+The corresponding `v0.1.0` GitHub Release is published. Its release assets have passed published-byte verification and clean external greenfield installation/execution.
+
+Future source development must not blur these states:
+
+```text
+source under development
+    != accepted source baseline
+    != published release bytes
+    != published-byte verification
+    != external greenfield acceptance
+```
+
+A later development version may advance beyond `0.1.0`, but documentation must always distinguish the current source state from the latest published release.

@@ -16,6 +16,8 @@ same OrbitFabric mission contract
 
 The OrbitFabric entity identities do not change. The F Prime architecture is free to evolve.
 
+This example is part of the accepted `0.1.0` product surface. Both layouts have passed native F Prime generation, build and generated dictionary verification against the exact supported F Prime/FPP lane.
+
 ## Upstream contract
 
 The example deliberately uses the `demo-3u` reference mission from the exact OrbitFabric Core baseline accepted by this adapter:
@@ -102,9 +104,9 @@ No OrbitFabric mission entity is renamed or redefined to make that F Prime refac
 
 The adapter does not infer a component architecture from OrbitFabric subsystems. The two layouts are explicit engineering choices expressed by two Projection Profiles.
 
-## Run the example
+## Run the consumer proof
 
-Install the adapter and the exact Core baseline, then execute:
+Install the published adapter product and the exact Core baseline, then obtain the matching `v0.1.0` repository source only for the example files and execute:
 
 ```bash
 python examples/reference-contract-evolution/verify_reference_example.py \
@@ -119,12 +121,12 @@ Core demo-3u Mission Model
     -> orbitfabric export integration-input-set
     -> one Core Integration Input Set
     -> Profile A
-    -> orbitfabric-fprime
+    -> installed orbitfabric-fprime product
     -> Layout A FPP + Integration Result
 
 same Core Integration Input Set
     -> Profile B
-    -> orbitfabric-fprime
+    -> installed orbitfabric-fprime product
     -> Layout B FPP + Integration Result
 ```
 
@@ -145,9 +147,42 @@ The script writes a machine-readable proof:
 reference-example-proof.json
 ```
 
+## Native F Prime acceptance
+
+The same contract evolution is also materialized into two native F Prime project fixtures.
+
+For each layout the canonical acceptance path performs:
+
+```text
+OrbitFabric Integration Input Set
+    -> adapter projection
+    -> FPP fragments
+    -> explicit composition in repo-owned Reference components/topology
+    -> fprime-util generate
+    -> fprime-util build
+    -> generated F Prime dictionary
+```
+
+The verifier then checks both dictionaries and requires:
+
+- both native generate/build paths to pass;
+- both dictionaries to resolve the projected command, event, telemetry and packet identities;
+- the OrbitFabric source identity set to remain unchanged;
+- F Prime resolved placement to evolve exactly with the Profile;
+- packet membership to follow the telemetry placement.
+
+The validated downstream lane is:
+
+```text
+F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
+FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
+```
+
+This native proof is a permanent CI gate for the adapter.
+
 ## Why this matters to an F Prime user
 
-This example is not intended to show that OrbitFabric can replace FPP or model a F Prime topology.
+This example is not intended to show that OrbitFabric can replace FPP or model an F Prime topology.
 
 It shows a different value:
 
@@ -156,9 +191,3 @@ It shows a different value:
 F Prime remains the downstream authority for components, instances, topology, FPP interpretation, build behavior, generated dictionary identity and runtime semantics.
 
 The adapter provides an explicit and reviewable bridge between the stable mission contract and those native project choices.
-
-## Next acceptance step
-
-This first Reference Example gate verifies the contract and projection behavior through the installed adapter product path.
-
-The next refinement will materialize both layouts as native F Prime project fixtures and require each layout to pass F Prime generate, build and dictionary resolution. That native two-layout proof will extend this example without changing its mission contract.

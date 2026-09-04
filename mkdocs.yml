@@ -1,5 +1,5 @@
 site_name: OrbitFabric F Prime Adapter
-site_description: OrbitFabric adapter for projecting mission contracts into F Prime (F´) FPP artifacts.
+site_description: OrbitFabric adapter for projecting mission contracts into F Prime (F') FPP artifacts.
 site_url: https://farotech.github.io/orbitfabric-fprime-adapter/
 repo_url: https://github.com/FAROTECH/orbitfabric-fprime-adapter
 repo_name: FAROTECH/orbitfabric-fprime-adapter
@@ -40,10 +40,17 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Product contract: product-contract.md
-  - F Prime Projection Profile: projection-profile.md
-  - Core input and Integration Result: core-input-and-result.md
-  - Architecture and ownership: architecture-and-ownership.md
-  - Target compatibility: target-compatibility.md
-  - Integration Coverage: integration-coverage.md
-  - Development and verification: development.md
+  - User:
+      - Getting Started: getting-started.md
+      - Reference Example: reference-example.md
+      - F Prime Projection Profile: projection-profile.md
+      - Core input and Integration Result: core-input-and-result.md
+      - Integration Coverage: integration-coverage.md
+  - Architecture:
+      - Product contract: product-contract.md
+      - Architecture and ownership: architecture-and-ownership.md
+      - Target compatibility: target-compatibility.md
+  - Developer / Contributor:
+      - Development and verification: development.md
+  - Releases:
+      - 0.1.0: releases/0.1.0.md
