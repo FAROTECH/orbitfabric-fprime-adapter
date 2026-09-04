@@ -10,6 +10,9 @@ from pathlib import Path
 from typing import Any
 
 
+ACCEPTED_FRAMEWORK_METADATA = {"8a62e45", "v4.2.2"}
+
+
 def load(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -31,6 +34,15 @@ def require_names(index: dict[str, dict[str, Any]], names: list[str], label: str
     missing = [name for name in names if name not in index]
     if missing:
         raise RuntimeError(f"{label}: missing resolved identities: {missing}")
+
+
+def require_framework_metadata(metadata: dict[str, Any], layout: str) -> None:
+    framework_version = metadata.get("frameworkVersion")
+    if framework_version not in ACCEPTED_FRAMEWORK_METADATA:
+        raise RuntimeError(
+            f"layout {layout} dictionary frameworkVersion {framework_version!r} "
+            f"is not an accepted representation of F Prime v4.2.2"
+        )
 
 
 def resolved(dictionary: dict[str, Any], layout: str) -> dict[str, Any]:
@@ -105,10 +117,8 @@ def main() -> int:
 
     metadata_a = dictionary_a.get("metadata", {})
     metadata_b = dictionary_b.get("metadata", {})
-    if metadata_a.get("frameworkVersion") != "8a62e45":
-        raise RuntimeError("layout A dictionary does not come from accepted F Prime source")
-    if metadata_b.get("frameworkVersion") != "8a62e45":
-        raise RuntimeError("layout B dictionary does not come from accepted F Prime source")
+    require_framework_metadata(metadata_a, "A")
+    require_framework_metadata(metadata_b, "B")
 
     resolved_a = resolved(dictionary_a, "a")
     resolved_b = resolved(dictionary_b, "b")
