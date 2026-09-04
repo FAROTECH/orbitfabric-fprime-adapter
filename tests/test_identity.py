@@ -13,7 +13,7 @@ from orbitfabric_fprime_adapter.constants import (
 
 
 def test_canonical_identity() -> None:
-    assert __version__ == "0.1.0.dev0"
+    assert __version__ == "0.1.0"
     assert DISTRIBUTION_NAME == "orbitfabric-fprime-adapter"
     assert PYTHON_PACKAGE == "orbitfabric_fprime_adapter"
     assert CONSOLE_COMMAND == "orbitfabric-fprime"
