@@ -1,6 +1,6 @@
 # F Prime Adapter Integration Coverage
 
-Status: **canonical `0.1.0.dev0` implementation and exact-lane native acceptance established; publication and external greenfield acceptance remain before stable `0.1.0`.**
+Status: **stable `0.1.0` release published; exact-lane native acceptance, published-byte verification and external greenfield acceptance complete.**
 
 This matrix defines the semantic denominator for the first maintained OrbitFabric F Prime adapter. It records what is meaningful for F Prime, what the first product projects, and where OrbitFabric semantics intentionally remain outside the FPP declaration surface.
 
@@ -74,7 +74,7 @@ All four remain `PARTIAL` because OrbitFabric carries mission-level semantics th
 
 ## Evidence state
 
-The canonical repository has independently established:
+The stable `0.1.0` release has independently established:
 
 1. projection implementation and regression coverage;
 2. Core Integration Input Set consumption, Integration Result and execution-backed Coverage;
@@ -82,6 +82,9 @@ The canonical repository has independently established:
 4. generated dictionary conformance and resolved target identity;
 5. GDS runtime closed-loop acceptance through projected command, telemetry, event and command completion;
 6. consumer Reference Example acceptance with one stable OrbitFabric contract across two F Prime placements;
-7. managed Adapter Manager lifecycle and provider-neutral release proof.
+7. native two-layout Reference Example acceptance;
+8. managed Adapter Manager lifecycle and provider-neutral release proof;
+9. published release byte verification;
+10. clean external greenfield installation/execution, including native two-layout acceptance from the published product path.
 
-Publication of immutable release bytes and external greenfield acceptance are deliberately tracked as later release gates and are not implied by this matrix.
+These evidence layers remain distinct. Integration Coverage describes semantic disposition; it does not replace native target acceptance, release verification or greenfield evidence.
