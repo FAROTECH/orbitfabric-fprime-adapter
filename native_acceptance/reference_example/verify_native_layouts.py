@@ -9,7 +9,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 ACCEPTED_FRAMEWORK_METADATA = {"8a62e45", "v4.2.2"}
 
 
