@@ -89,7 +89,7 @@ for name in (
 PY
 
 "$EXECUTABLE" --version | tee "$evidence/console-version.txt"
-grep -Fxq "orbitfabric-fprime 0.1.0.dev0" "$evidence/console-version.txt"
+grep -Fxq "orbitfabric-fprime 0.1.0" "$evidence/console-version.txt"
 
 orbitfabric adapter remove "$INSTANCE_ID" --json | tee "$evidence/remove.json"
 orbitfabric adapter list --json | tee "$evidence/final-inventory.json"

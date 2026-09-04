@@ -23,7 +23,7 @@ def test_manifest_conforms_to_core_contract() -> None:
 
     assert manifest["adapter"] == {
         "id": "orbitfabric-fprime",
-        "version": "0.1.0.dev0",
+        "version": "0.1.0",
     }
     assert manifest["integration"]["id"] == "orbitfabric-fprime"
     assert manifest["capabilities"] == EXPECTED_CAPABILITIES

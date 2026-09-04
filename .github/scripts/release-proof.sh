@@ -45,7 +45,7 @@ assert release["source_coordinate"] == {
     "publisher": "FAROTECH",
     "name": "orbitfabric/fprime",
 }
-assert release["release_version"] == "0.1.0.dev0"
+assert release["release_version"] == "0.1.0"
 ProjectLockService().load("$lock")
 PY
 

@@ -10,7 +10,7 @@ def test_version_flag(capsys: pytest.CaptureFixture[str]) -> None:
         main(["--version"])
 
     assert exc.value.code == 0
-    assert capsys.readouterr().out.strip() == "orbitfabric-fprime 0.1.0.dev0"
+    assert capsys.readouterr().out.strip() == "orbitfabric-fprime 0.1.0"
 
 
 def test_unknown_operation_is_rejected(

@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Development status:** `0.1.0.dev0`. Product identity, Core Integration Input Set execution, FPP projection, consumer Reference Example acceptance, native two-layout Reference Example acceptance, exact-lane native generation/build/dictionary conformance and canonical GDS closed-loop runtime acceptance are established. Publication and external greenfield acceptance remain before the first stable release.
+> **Release freeze status:** `0.1.0`. Product identity, Core Integration Input Set execution, FPP projection, consumer Reference Example acceptance, native two-layout Reference Example acceptance, exact-lane native generation/build/dictionary conformance and canonical GDS closed-loop runtime acceptance are established. The `0.1.0` product bytes are not yet published. Immutable publication, published-byte verification and external greenfield acceptance remain release gates.
 
 ## Why this boundary exists
 
@@ -96,8 +96,8 @@ console command             orbitfabric-fprime
 adapter / integration id    orbitfabric-fprime
 logical key                 orbitfabric/fprime
 source coordinate           github.com/FAROTECH:orbitfabric/fprime
-development version         0.1.0.dev0
-first stable target         0.1.0
+frozen version              0.1.0
+publication status          pending release gates
 ```
 
 ## Development

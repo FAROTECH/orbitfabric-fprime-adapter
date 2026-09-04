@@ -45,16 +45,10 @@ CI has observed generation, build, generated dictionary conformance and GDS clos
 
 ## Version discipline
 
-Development version:
-
-```text
-0.1.0.dev0
-```
-
-Target first stable version:
+The product source is frozen at:
 
 ```text
 0.1.0
 ```
 
-Projection scope, Integration Coverage, native target acceptance, consumer Reference Example acceptance and native two-layout Reference Example acceptance are established. Stable publication remains blocked until immutable release bytes, published-byte verification and external greenfield installation/execution are closed.
+This freeze does not itself publish a stable release. Projection scope, Integration Coverage, native target acceptance, consumer Reference Example acceptance and native two-layout Reference Example acceptance are established. Publication remains blocked until immutable release bytes, published-byte verification and external greenfield installation/execution are closed.
