@@ -253,7 +253,10 @@ def main() -> int:
                 "payloadMonitor",
             ]
         ),
-        "note": "Pinned Ref is infrastructure-only evidence scaffolding; Reference.* components and placement are the acceptance subject.",
+        "note": (
+            "Pinned Ref is infrastructure-only evidence scaffolding; "
+            "Reference.* components and placement are the acceptance subject."
+        ),
     }
     (project / "REFERENCE_EXAMPLE_NATIVE_FIXTURE.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
