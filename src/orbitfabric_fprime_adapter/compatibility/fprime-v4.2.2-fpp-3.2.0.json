@@ -16,7 +16,9 @@
     "canonical_source_acceptance": "accepted",
     "canonical_native_static_acceptance": "accepted",
     "canonical_dictionary_conformance": "accepted",
-    "canonical_gds_runtime_acceptance": "accepted"
+    "canonical_gds_runtime_acceptance": "accepted",
+    "canonical_reference_example_consumer_acceptance": "accepted",
+    "canonical_reference_example_native_two_layout_acceptance": "accepted"
   },
   "claims": {
     "exact_pair_only": true,
