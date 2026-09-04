@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Native F Prime generation/build and generated dictionary conformance against the exact target lane.
 - Canonical F Prime GDS closed-loop runtime acceptance for projected command, telemetry, event and command completion.
 - Consumer Reference Example showing one stable OrbitFabric contract across monolithic and split F Prime placements.
+- Native Reference Example acceptance proving both placements through F Prime generation, build and generated dictionary resolution while preserving the same OrbitFabric source identity set.
 - Managed install, verify, execute, inspect and remove lifecycle proof through OrbitFabric Adapter Manager.
 - Provider-neutral release descriptor and project-lock proof.
 - MkDocs documentation baseline.
