@@ -164,7 +164,7 @@ The generated FPP files are declaration fragments for explicit composition insid
 
 ## 7. Try the Reference Example
 
-The best first evaluation path is the [Reference Example: Stable Mission Contract, Evolving F Prime Architecture](../examples/reference-contract-evolution/README.md).
+The best first evaluation path is the [Reference Example](reference-example.md).
 
 It keeps one OrbitFabric mission contract stable while changing explicit downstream placement from a monolithic F Prime component layout to a split controller/monitor layout.
 
@@ -182,7 +182,7 @@ For a released version, use the matching `v0.1.0` source archive only to access 
 
 As a user:
 
-- [Reference Example](../examples/reference-contract-evolution/README.md)
+- [Reference Example](reference-example.md)
 - [F Prime Projection Profile](projection-profile.md)
 - [Core input and result boundary](core-input-and-result.md)
 - [Integration Coverage](integration-coverage.md)
