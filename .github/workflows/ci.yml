@@ -217,6 +217,69 @@ jobs:
           path: .reference-example-work/reference-example-proof.json
           if-no-files-found: warn
 
+  reference-example-native:
+    needs: reference-example
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout adapter
+        uses: actions/checkout@v4
+
+      - name: Checkout exact F Prime source
+        uses: actions/checkout@v4
+        with:
+          repository: nasa/fprime
+          ref: 8a62e455a90b6d4f498c332d45d65a2a819988d8
+          path: _native/fprime
+          submodules: recursive
+
+      - name: Checkout exact FPP source
+        uses: actions/checkout@v4
+        with:
+          repository: nasa/fpp
+          ref: 93f484b7521a8e8894cba25b26e633cc87d8e37a
+          path: _native/fpp
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Checkout exact OrbitFabric Core baseline
+        uses: actions/checkout@v4
+        with:
+          repository: FAROTECH/orbitfabric
+          ref: 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
+          path: _orbitfabric_core
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pinned toolchain, Core baseline and adapter wheel
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+          python -m pip install -r ./_native/fprime/requirements.txt
+          test "$(git -C ./_native/fpp rev-list -n 1 v3.2.0)" = "93f484b7521a8e8894cba25b26e633cc87d8e37a"
+          python -m pip install ./_orbitfabric_core
+          python -m build --wheel
+          python -m pip install --force-reinstall dist/*.whl
+
+      - name: Run native Reference Example architecture-evolution proof
+        run: |
+          bash native_acceptance/reference_example/run_native.sh \
+            "$PWD/_native/fprime" \
+            "$PWD/_native/fpp" \
+            "$PWD/_orbitfabric_core" \
+            "$PWD/.reference-example-native-work"
+
+      - name: Upload native Reference Example evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fprime-reference-contract-evolution-native
+          path: .reference-example-native-work/evidence
+          if-no-files-found: warn
+
   installed-lifecycle:
     needs: checks
     runs-on: ubuntu-latest
@@ -258,7 +321,7 @@ jobs:
     needs:
       - installed-lifecycle
       - native-runtime
-      - reference-example
+      - reference-example-native
     runs-on: ubuntu-latest
 
     steps:
