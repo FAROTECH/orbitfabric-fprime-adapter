@@ -29,11 +29,12 @@ def append_before_last_brace(path: Path, block: str) -> None:
 
 
 def telemetry_refs_in_packet_set(path: Path) -> list[str]:
-    """Collect qualified channel references from one FPP telemetry packet set."""
+    """Collect complete qualified channel references from one FPP packet set."""
     text = path.read_text(encoding="utf-8")
     uncommented = "\n".join(line.split("#", 1)[0] for line in text.splitlines())
+    segment = r"\$?[A-Za-z_][A-Za-z0-9_]*"
     refs = re.findall(
-        r"\b[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*\b",
+        rf"(?<![A-Za-z0-9_$]){segment}(?:\.{segment})+(?![A-Za-z0-9_$])",
         uncommented,
     )
     values = sorted(set(refs))
