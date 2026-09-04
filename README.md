@@ -1,31 +1,79 @@
 # OrbitFabric F Prime Adapter
 
-`orbitfabric-fprime-adapter` connects OrbitFabric mission contracts to native F Prime (F´) projects.
+`orbitfabric-fprime-adapter` connects OrbitFabric mission contracts to native F Prime (F') projects.
 
-The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
+The adapter projects explicit OrbitFabric contract entities into FPP declaration fragments while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Release freeze status:** `0.1.0`. Product identity, Core Integration Input Set execution, FPP projection, consumer Reference Example acceptance, native two-layout Reference Example acceptance, exact-lane native generation/build/dictionary conformance and canonical GDS closed-loop runtime acceptance are established. The `0.1.0` product bytes are not yet published. Immutable publication, published-byte verification and external greenfield acceptance remain release gates.
+> **Release status:** `v0.1.0` is published as a stable GitHub Release. The published wheel and release descriptor have passed published-byte verification, clean external greenfield installation and execution, exact-lane native F Prime generation/build/dictionary acceptance, and canonical GDS closed-loop runtime acceptance.
 
-## Why this boundary exists
+## Choose your path
 
-OrbitFabric owns stable mission-level identity and integration contracts. This adapter owns explicit F Prime-specific projection intent. F Prime remains authoritative for FPP interpretation, autocoding, generated dictionaries, build behavior and runtime semantics.
+### I want to use the adapter
 
-That means an F Prime project can evolve its internal architecture without forcing the upstream OrbitFabric mission contract to become an F Prime architecture model.
+Use the published release through **OrbitFabric Adapter Manager**.
 
-The adapter does **not** infer:
+```text
+OrbitFabric Core
+    -> published adapter release
+    -> Adapter Manager install
+    -> verify
+    -> execute fpp_contract_projection
+    -> FPP declaration fragments + Integration Result
+```
 
-- OrbitFabric subsystems as F Prime components;
-- OrbitFabric relationships as F Prime topology connections;
-- OrbitFabric modes as F Prime state machines;
-- project topology, scheduling or runtime architecture.
+A normal consumer does not need an editable source install, a locally rebuilt wheel or publisher tooling.
 
-## First operation
+Start with **[Getting Started](docs/getting-started.md)**.
+
+### I want to try the adapter
+
+Start with the **[Reference Example: Stable Mission Contract, Evolving F Prime Architecture](examples/reference-contract-evolution/README.md)**.
+
+It demonstrates the central architectural property of this adapter:
+
+```text
+same OrbitFabric mission contract
+    -> Profile A -> monolithic F Prime placement
+    -> Profile B -> split F Prime placement
+```
+
+The OrbitFabric source identities stay stable while explicit F Prime component and instance placement evolves. Both layouts have been materialized into native F Prime projects and accepted through `fprime-util generate`, `fprime-util build` and generated dictionary verification against the exact supported F Prime lane.
+
+This is intentionally not an F Prime project generator. It is a reviewable bridge from stable mission-level contract identity to project-owned native F Prime architecture.
+
+### I want to develop or contribute
+
+Clone the repository and use the development environment:
+
+```bash
+git clone https://github.com/FAROTECH/orbitfabric-fprime-adapter.git
+cd orbitfabric-fprime-adapter
+
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+```
+
+The direct adapter console command:
+
+```text
+orbitfabric-fprime
+```
+
+is primarily a contributor and development surface. Normal consumers should use `orbitfabric adapter ...` through Adapter Manager.
+
+Start with **[Development and verification](docs/development.md)**.
+
+## What the adapter does
+
+The `0.1.0` product baseline consumes the public OrbitFabric Core Integration Input Set and supports one deliberately narrow operation:
 
 ```text
 fpp_contract_projection
 ```
 
-The first release is deliberately limited to four projection families:
+Its initial projection families are:
 
 ```text
 OrbitFabric telemetry   -> FPP telemetry declarations
@@ -34,25 +82,52 @@ OrbitFabric events      -> FPP event declarations
 OrbitFabric packets     -> FPP telemetry packet specifiers
 ```
 
-All target placement and local allocation are explicit Profile intent. The adapter does not create the hosting F Prime components, instances or topology.
+All F Prime placement and local allocation choices are explicit Profile intent. The adapter does not create the hosting F Prime components, instances or topology.
 
-## Canonical execution boundary
+The adapter does **not** infer:
 
-The adapter consumes the public Core Integration Input Set. It does not parse Mission Model YAML directly.
+- OrbitFabric subsystems as F Prime components;
+- OrbitFabric relationships as F Prime topology connections;
+- OrbitFabric modes as F Prime state machines;
+- project topology, scheduling or runtime architecture.
+
+## Why this boundary exists
+
+OrbitFabric owns stable mission-level identity and generic integration contracts. This adapter owns explicit F Prime-specific projection intent. F Prime remains authoritative for component architecture, FPP interpretation, autocoding, generated dictionaries, build behavior and runtime semantics.
+
+That separation allows an F Prime project to refactor its native architecture without forcing the upstream mission contract to become an F Prime architecture model.
+
+The Reference Example makes this property executable rather than merely descriptive.
+
+## Consumer execution model
+
+The adapter consumes a coherent Core Integration Input Set. It does not parse Mission Model YAML directly.
+
+Normal managed execution is:
 
 ```bash
-orbitfabric-fprime run \
+orbitfabric adapter execute "$ORBITFABRIC_ADAPTER_INSTANCE_ID" \
   --operation fpp_contract_projection \
-  --input-set-manifest path/to/integration_input_manifest.json \
-  --profile path/to/fprime-profile.yaml \
-  --output-dir generated/fprime
+  --input-set-manifest <integration_input_manifest.json> \
+  --profile <fprime-profile.yaml> \
+  --output-dir <output-directory>
 ```
 
-The adapter verifies the input-set digest, each required surface digest, supported Core surface versions, semantic lint state and Profile schema before projection. The generated bundle is completed by `integration_result.json`, which records input provenance, artifacts, mappings, integration diagnostics and execution-backed coverage.
+Representative outputs include:
+
+```text
+components/<component>/OF_Commands.fppi
+components/<component>/OF_Events.fppi
+components/<component>/OF_Telemetry.fppi
+topology/<packet-set>/OF_Packets.fppi
+integration_result.json
+```
+
+The adapter verifies the input-set digest, required surface digests, supported Core surface versions, semantic lint state and Profile schema before projection. `integration_result.json` records input provenance, artifacts, mappings, diagnostics, resolutions and execution-backed coverage.
 
 See [Core input and result boundary](docs/core-input-and-result.md).
 
-## Target lane
+## Validated target lane
 
 The initial compatibility lane is exact:
 
@@ -61,25 +136,33 @@ F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
 FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-Canonical CI has observed this exact lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build`, generated dictionary conformance and a live F Prime GDS closed loop. The runtime gate sends `Ref.pingRcvr.OF_SetMode(mode=2)` and observes command completion, `Ref.pingRcvr.OF_Temperature = 22.0` and `Ref.pingRcvr.OF_ModeChanged` in the evidence-only Ref fixture. No broader F Prime version range is currently claimed.
+Canonical CI has observed this exact lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build`, generated dictionary conformance and a live F Prime GDS closed loop. No broader F Prime or FPP version range is currently claimed.
 
 See [Target compatibility](docs/target-compatibility.md).
 
-## Reference Example
+## Evidence model
 
-The consumer-facing Reference Example demonstrates a central architectural property:
+The stable release is backed by independent layers rather than one aggregate test:
 
 ```text
-one stable OrbitFabric mission contract
-    -> Profile A -> monolithic F Prime placement
-    -> Profile B -> split F Prime placement
+Core contract conformance
+        +
+adapter-owned tests
+        +
+consumer Reference Example
+        +
+native two-layout F Prime generate/build/dictionary acceptance
+        +
+installed Adapter Manager lifecycle
+        +
+canonical GDS closed-loop runtime acceptance
+        +
+release proof and published-byte verification
+        +
+external greenfield installation and execution
 ```
 
-The OrbitFabric source identities remain unchanged while the explicit F Prime host components and instances evolve. The example uses the exact accepted OrbitFabric Core baseline and verifies the dual projection through the installed adapter product path.
-
-Canonical native acceptance then materializes both placements into F Prime, runs generation and build for each layout, reads both generated dictionaries and verifies that downstream identity changes only where the Profile changes while the OrbitFabric source identity set stays stable.
-
-See [Stable Mission Contract, Evolving F Prime Architecture](examples/reference-contract-evolution/README.md).
+Core conformance does not substitute for downstream-native acceptance, and native acceptance does not substitute for release/publication evidence.
 
 ## Integration Coverage
 
@@ -87,7 +170,7 @@ The initial semantic matrix is explicit about partial representation and unsuppo
 
 See [Integration Coverage](coverage/integration-coverage.md).
 
-## Canonical identity
+## Product identity
 
 ```text
 repository / distribution  orbitfabric-fprime-adapter
@@ -96,38 +179,35 @@ console command             orbitfabric-fprime
 adapter / integration id    orbitfabric-fprime
 logical key                 orbitfabric/fprime
 source coordinate           github.com/FAROTECH:orbitfabric/fprime
-frozen version              0.1.0
-publication status          pending release gates
+version                     0.1.0
+release                     v0.1.0 published
 ```
-
-## Development
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e ".[dev]"
-orbitfabric-fprime --version
-pytest -q
-ruff check .
-mkdocs build --strict
-```
-
-The exact OrbitFabric Core conformance baseline used by CI is pinned in `.github/workflows/ci.yml`.
 
 ## Documentation
 
-- [Product contract](docs/product-contract.md)
+### User
+
+- [Getting Started](docs/getting-started.md)
+- [Reference Example](examples/reference-contract-evolution/README.md)
 - [F Prime Projection Profile](docs/projection-profile.md)
 - [Core input and result boundary](docs/core-input-and-result.md)
+- [Integration Coverage](coverage/integration-coverage.md)
+
+### Developer / Contributor
+
+- [Development and verification](docs/development.md)
+- [Product contract](docs/product-contract.md)
 - [Architecture and ownership](docs/architecture-and-ownership.md)
 - [Target compatibility](docs/target-compatibility.md)
-- [Reference Example](examples/reference-contract-evolution/README.md)
-- [Integration Coverage](coverage/integration-coverage.md)
-- [Development and verification](docs/development.md)
+
+### Release
+
+- [0.1.0 release notes](docs/releases/0.1.0.md)
+- [GitHub Release v0.1.0](https://github.com/FAROTECH/orbitfabric-fprime-adapter/releases/tag/v0.1.0)
 
 ## F Prime project relationship
 
-F´ / F Prime is an external downstream project. This repository is an independent OrbitFabric integration and is not part of, or an endorsement by, the F Prime project, NASA or JPL.
+F Prime is an independent downstream project. This repository is an independent OrbitFabric integration and is not part of, or an endorsement by, the F Prime project, NASA or JPL.
 
 ## License
 
