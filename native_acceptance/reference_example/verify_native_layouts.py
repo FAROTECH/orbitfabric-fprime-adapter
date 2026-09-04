@@ -126,7 +126,8 @@ def main() -> int:
 
     payload = {
         "kind": "orbitfabric.fprime.reference_contract_evolution_native_acceptance",
-        "version": "0.1-candidate",
+        "version": "0.1",
+        "adapter_version": "0.1.0",
         "status": "passed",
         "core_input_set_sha256": proof["core_input_set_sha256"],
         "stable_sources": proof["stable_sources"],
