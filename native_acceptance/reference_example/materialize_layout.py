@@ -11,6 +11,10 @@ import subprocess
 from pathlib import Path
 
 FPRIME_COMMIT = "8a62e455a90b6d4f498c332d45d65a2a819988d8"
+COMMANDS = [
+    ("OF_StartAcquisition", [("U16", "duration_s")]),
+    ("OF_StopAcquisition", []),
+]
 
 
 def replace_once(path: Path, old: str, new: str) -> None:
@@ -43,7 +47,17 @@ def telemetry_refs_in_packet_set(path: Path) -> list[str]:
     return values
 
 
-def component_files(project: Path, name: str, generated: Path, commands: list[str]) -> None:
+def handler_signature(command: str, parameters: list[tuple[str, str]]) -> str:
+    suffix = "".join(f", {type_name} {name}" for type_name, name in parameters)
+    return f"{command}_cmdHandler(FwOpcodeType opCode, U32 cmdSeq{suffix})"
+
+
+def component_files(
+    project: Path,
+    name: str,
+    generated: Path,
+    commands: list[tuple[str, list[tuple[str, str]]]],
+) -> None:
     root = project / "Ref" / "Reference" / name
     generated_root = root / "generated"
     generated_root.mkdir(parents=True, exist_ok=True)
@@ -94,10 +108,8 @@ def component_files(project: Path, name: str, generated: Path, commands: list[st
     ]
     if commands:
         header.extend(["", "  private:"])
-        for command in commands:
-            header.append(
-                f"    void {command}_cmdHandler(FwOpcodeType opCode, U32 cmdSeq);"
-            )
+        for command, parameters in commands:
+            header.append(f"    void {handler_signature(command, parameters)};")
     header.extend(["};", "}  // namespace Reference", ""])
     (root / f"{impl_name}.hpp").write_text("\n".join(header), encoding="utf-8")
 
@@ -108,11 +120,17 @@ def component_files(project: Path, name: str, generated: Path, commands: list[st
         f"{impl_name}::{impl_name}(const char* const compName) : {base_name}(compName) {{}}",
         f"{impl_name}::~{impl_name}() {{}}",
     ]
-    for command in commands:
+    for command, parameters in commands:
         source.extend(
             [
                 "",
-                f"void {impl_name}::{command}_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) {{",
+                f"void {impl_name}::{handler_signature(command, parameters)} {{",
+            ]
+        )
+        for _, parameter_name in parameters:
+            source.append(f"    (void){parameter_name};")
+        source.extend(
+            [
                 "    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);",
                 "}",
             ]
@@ -191,7 +209,7 @@ def main() -> int:
             project,
             "PayloadComponent",
             projection / "components/Reference_PayloadComponent",
-            ["OF_StartAcquisition", "OF_StopAcquisition"],
+            COMMANDS,
         )
         reference_telemetry = "payload.OF_AcquisitionActive"
         add_fpp = (
@@ -217,7 +235,7 @@ def main() -> int:
             project,
             "PayloadController",
             projection / "components/Reference_PayloadController",
-            ["OF_StartAcquisition", "OF_StopAcquisition"],
+            COMMANDS,
         )
         component_files(
             project,
@@ -251,10 +269,6 @@ def main() -> int:
     if not packet_fragment.is_file():
         raise RuntimeError(f"missing generated packet fragment: {packet_fragment}")
 
-    # FPP requires each telemetry packet set to account for every topology
-    # telemetry channel. The pinned Ref set must therefore explicitly omit the
-    # new Reference Example telemetry, while the new ReferencePackets set must
-    # explicitly omit all pre-existing Ref telemetry channels.
     ref_packets = deployment / "Top/RefPackets.fppi"
     existing_ref_telemetry = telemetry_refs_in_packet_set(ref_packets)
     append_before_last_brace(ref_packets, f"  {reference_telemetry}\n")
@@ -293,6 +307,10 @@ def main() -> int:
                 "payloadMonitor",
             ]
         ),
+        "command_handler_contract": {
+            command: [f"{type_name} {name}" for type_name, name in parameters]
+            for command, parameters in COMMANDS
+        },
         "packet_set_reconciliation": {
             "reference_telemetry": reference_telemetry,
             "ref_packet_set_omits_reference_telemetry": True,
