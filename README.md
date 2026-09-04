@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP artifacts while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Development status:** `0.1.0.dev0`. Product identity, Core Integration Input Set execution, FPP projection, consumer Reference Example acceptance, exact-lane native generation/build/dictionary conformance and canonical GDS closed-loop runtime acceptance are established. Publication and external greenfield acceptance remain before the first stable release.
+> **Development status:** `0.1.0.dev0`. Product identity, Core Integration Input Set execution, FPP projection, consumer Reference Example acceptance, native two-layout Reference Example acceptance, exact-lane native generation/build/dictionary conformance and canonical GDS closed-loop runtime acceptance are established. Publication and external greenfield acceptance remain before the first stable release.
 
 ## Why this boundary exists
 
@@ -76,6 +76,8 @@ one stable OrbitFabric mission contract
 ```
 
 The OrbitFabric source identities remain unchanged while the explicit F Prime host components and instances evolve. The example uses the exact accepted OrbitFabric Core baseline and verifies the dual projection through the installed adapter product path.
+
+Canonical native acceptance then materializes both placements into F Prime, runs generation and build for each layout, reads both generated dictionaries and verifies that downstream identity changes only where the Profile changes while the OrbitFabric source identity set stays stable.
 
 See [Stable Mission Contract, Evolving F Prime Architecture](examples/reference-contract-evolution/README.md).
 
