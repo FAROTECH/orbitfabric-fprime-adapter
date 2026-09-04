@@ -8,12 +8,13 @@ The project is currently at `0.1.0.dev0`.
 
 The first operation is `fpp_contract_projection`. Its initial semantic scope covers telemetry, commands, events and telemetry packet specifiers while leaving F Prime component architecture, topology, scheduling and runtime behavior under F Prime project ownership.
 
-The projection contract and exact candidate target lane are now defined. Canonical implementation and downstream-native acceptance remain subsequent gates.
+Canonical implementation, Core Integration Input Set consumption, Integration Result generation, consumer Reference Example acceptance, exact-lane F Prime generation/build/dictionary conformance and GDS closed-loop runtime acceptance are established. Publication and external greenfield acceptance remain before the first stable release.
 
 Continue with:
 
 - [Product contract](product-contract.md)
 - [F Prime Projection Profile](projection-profile.md)
+- [Core input and result boundary](core-input-and-result.md)
 - [Architecture and ownership](architecture-and-ownership.md)
 - [Target compatibility](target-compatibility.md)
 - [Integration Coverage](integration-coverage.md)
