@@ -1,6 +1,6 @@
 # Target compatibility
 
-The first F Prime adapter release starts from one exact downstream lane.
+The first stable F Prime adapter release claims one exact downstream lane.
 
 ## Accepted lane
 
@@ -21,8 +21,6 @@ orbitfabric_fprime_adapter/compatibility/fprime-v4.2.2-fpp-3.2.0.json
 ```
 
 ## Canonical evidence status
-
-The canonical adapter has re-established the historical PoC lane against the product source and installed wheel path.
 
 Canonical CI has observed:
 
@@ -57,12 +55,16 @@ The synthetic mode-to-temperature behavior belongs only to the acceptance fixtur
 
 The Reference Example adds a separate native architecture-evolution proof. One stable Core Integration Input Set is projected through two explicit F Prime Profiles. Both monolithic and split placements pass native F Prime generation and build, both generated dictionaries resolve the projected entities, packet membership follows telemetry placement, and the OrbitFabric source identity set remains unchanged while F Prime resolved identity evolves with the Profile.
 
-The exact lane therefore has canonical static acceptance, generated dictionary conformance, GDS runtime acceptance and native two-layout Reference Example acceptance for the current development source.
+## Release and greenfield status
+
+`v0.1.0` is published as a stable GitHub Release. The published release assets have passed published-byte verification and clean external greenfield installation/execution.
+
+The greenfield native acceptance independently re-established the exact F Prime and FPP source commits above, generated and built both Reference Example layouts, and verified the resulting dictionaries.
 
 ## Version policy for v0.1.0
 
 No compatibility range is claimed.
 
-The first stable release claims only the exact pair above. Forward compatibility, backward compatibility and other F Prime/FPP combinations remain unclaimed until separately evidenced.
+The stable `0.1.0` release claims only the exact pair above. Forward compatibility, backward compatibility and other F Prime/FPP combinations remain unclaimed until separately evidenced.
 
-Publication and external greenfield acceptance are separate release gates. They do not change the target compatibility result established here.
+Changing the pinned downstream baseline is therefore an evidence change, not a documentation-only change.
