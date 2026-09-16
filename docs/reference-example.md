@@ -1,8 +1,15 @@
-# Reference Example
+# Reference Examples
 
-The Reference Example is the fastest way to evaluate the architectural purpose of the adapter.
+The fastest way to understand this adapter is to run its two complementary Reference Examples.
 
-It demonstrates one stable OrbitFabric mission contract projected into two different native F Prime placements:
+They use the same OrbitFabric mission contract and explicit F Prime Projection Profiles, but answer different questions.
+
+| Example | Main question | Evidence |
+| --- | --- | --- |
+| [Contract evolution](https://github.com/FAROTECH/orbitfabric-fprime-adapter/tree/main/examples/reference-contract-evolution) | Can native F Prime architecture evolve while OrbitFabric mission identity stays stable? | consumer proof plus native generate/build/dictionary acceptance |
+| [Semantic reconciliation](https://github.com/FAROTECH/orbitfabric-fprime-adapter/tree/main/examples/reference-semantic-reconciliation) | Did the provider-native FPP semantic model interpret the explicit projected intent as expected? | typed reconciliation against FPP AST, analysis and source-location evidence |
+
+## Reference Example 1: contract evolution
 
 ```text
 same OrbitFabric mission contract
@@ -10,55 +17,68 @@ same OrbitFabric mission contract
     -> Profile B -> split F Prime placement
 ```
 
-The upstream OrbitFabric entity identities remain unchanged. The F Prime component and instance placement changes only through explicit Profile intent.
+The upstream OrbitFabric entity identities remain unchanged. F Prime component and instance placement changes only through explicit Profile intent.
 
-## What the example proves
+The full native path materializes both layouts, runs `fprime-util generate`, runs `fprime-util build`, collects generated dictionaries and verifies that provider-resolved identity evolves exactly with the Profiles.
 
-The accepted `0.1` example requires:
+See the [Contract Evolution README](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md) for the detailed layouts and clean local reproduction path.
 
-- the same OrbitFabric mission identity across both layouts;
-- the same Core Integration Input Set across both layouts;
-- the same OrbitFabric source identity set;
-- explicit F Prime placement changes matching the two Profiles;
-- telemetry packet membership following the changed telemetry placement;
-- native `fprime-util generate` and `fprime-util build` success for both layouts;
-- generated F Prime dictionaries resolving the projected command, event, telemetry and packet identities.
+## Reference Example 2: semantic reconciliation
 
-The validated lane is exact:
+```text
+OrbitFabric source identity
+    -> explicit Projection Profile intent
+    -> adapter FPP projection
+    -> native FPP composition
+    -> provider-native semantic observation
+    -> fail-closed reconciliation evidence
+```
+
+This proof checks component and instance placement, local allocations, symbols, packet membership and generated-source provenance through the version-matched `fprime-python-model` API.
+
+See the [Semantic Reconciliation README](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-semantic-reconciliation/README.md) for the clean greenfield path.
+
+## Repository map
+
+The repository separates public examples from provider-native acceptance harnesses:
+
+```text
+examples/
+    public stories, Profiles and proof logic
+
+native_acceptance/
+    concrete F Prime materialization and downstream acceptance
+
+src/
+    adapter product
+
+docs/
+    user and architecture documentation
+```
+
+For the contract-evolution example specifically:
+
+```text
+examples/reference-contract-evolution/
+    story + Profiles + consumer proof
+
+native_acceptance/reference_example/
+    materializer + full native runner + dictionary verifier
+```
+
+This split keeps the public example small while keeping the real F Prime project path executable and reviewable.
+
+## Validated lane
+
+Both examples stay on the exact accepted downstream lane:
 
 ```text
 F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
 FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-## Why this matters
+The semantic-reconciliation example additionally pins `fprime-community/fprime-python-model` to commit `934d79ddbe4ad1286e56a5575fed34fb0c44a1bb`.
 
-The adapter is not trying to replace FPP or model F Prime topology.
-
-Its value is the separation of concerns:
-
-```text
-OrbitFabric
-    owns stable mission-level identity and generic integration contracts
-
-Projection Profile
-    owns explicit F Prime-specific placement and allocation intent
-
-F Prime project
-    owns components, instances, topology, wiring, scheduling and runtime architecture
-
-F Prime toolchain
-    owns native interpretation, build and generated downstream identity
-```
-
-This lets the native F Prime architecture evolve without forcing the upstream mission contract to be renamed or remodeled around one implementation layout.
-
-## Full runnable example
-
-The complete example inputs, profiles, verifier and native acceptance fixture are kept in the repository under:
-
-[examples/reference-contract-evolution](https://github.com/FAROTECH/orbitfabric-fprime-adapter/tree/main/examples/reference-contract-evolution)
-
-Read the full [Reference Example README](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md) for the detailed layouts and execution path.
+Neither example widens the adapter compatibility claim.
 
 For consumer installation of the released adapter, start with [Getting Started](getting-started.md).
