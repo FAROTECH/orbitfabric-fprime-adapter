@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from orbitfabric_fprime_adapter.cli import main
+from orbitfabric_fprime_adapter.constants import VERSION
 
 
 def test_version_flag(capsys: pytest.CaptureFixture[str]) -> None:
@@ -10,7 +11,7 @@ def test_version_flag(capsys: pytest.CaptureFixture[str]) -> None:
         main(["--version"])
 
     assert exc.value.code == 0
-    assert capsys.readouterr().out.strip() == "orbitfabric-fprime 0.1.1"
+    assert capsys.readouterr().out.strip() == f"orbitfabric-fprime {VERSION}"
 
 
 def test_unknown_operation_is_rejected(
