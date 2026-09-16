@@ -20,9 +20,9 @@ If you want to modify the adapter, use [Development and verification](developmen
 
 ## Release baseline
 
-`v0.1.1` is the current patch-release baseline.
+`v0.1.2` is the current patch-release baseline.
 
-It preserves the F Prime integration behavior established by the `0.1` line and aligns the Adapter Source Coordinate carried by release metadata with the canonical product identity.
+It preserves the F Prime integration behavior established by the `0.1` line while freezing the two public Reference Examples, provider-native semantic reconciliation and their clean local reproduction paths as part of the tagged repository state.
 
 The validated downstream lane remains exact:
 
@@ -64,10 +64,10 @@ orbitfabric adapter list
 
 ## 3. Obtain the published adapter release assets
 
-For `v0.1.1`, obtain these exact assets from the matching GitHub Release:
+For `v0.1.2`, obtain these exact assets from the matching GitHub Release:
 
 ```text
-orbitfabric_fprime_adapter-0.1.1-py3-none-any.whl
+orbitfabric_fprime_adapter-0.1.2-py3-none-any.whl
 adapter-release.json
 SHA256SUMS
 ```
@@ -80,6 +80,8 @@ sha256sum -c SHA256SUMS
 
 A normal consumer should use the published wheel rather than rebuilding it from repository source.
 
+The GitHub tag and source archive freeze the complete engineering and integration surface for the same release, including Reference Examples, provider-native acceptance harnesses, documentation and CI definitions. Those repository resources remain separate from the minimal installable wheel.
+
 ## 4. Install through OrbitFabric Adapter Manager
 
 From the directory containing the release assets:
@@ -87,7 +89,7 @@ From the directory containing the release assets:
 ```bash
 orbitfabric adapter install \
   adapter-release.json \
-  --artifact orbitfabric_fprime_adapter-0.1.1-py3-none-any.whl
+  --artifact orbitfabric_fprime_adapter-0.1.2-py3-none-any.whl
 ```
 
 Inspect the installed inventory:
@@ -156,27 +158,30 @@ integration_result.json
 
 The generated FPP files are declaration fragments for explicit composition inside an existing F Prime project. The adapter does not generate the F Prime project, component architecture or topology.
 
-## 7. Try the Reference Example
+## 7. Try the Reference Examples
 
-The best first evaluation path is the [Reference Example](reference-example.md).
+The best evaluation path is [Reference Examples](reference-example.md).
 
-It keeps one OrbitFabric mission contract stable while changing explicit downstream placement from a monolithic F Prime component layout to a split controller/monitor layout.
+The first example keeps one OrbitFabric mission contract stable while changing explicit downstream placement from a monolithic F Prime component layout to a split controller/monitor layout.
 
-The example proves that:
+The second reconciles the explicit projected intent against provider-native FPP semantics and source provenance.
+
+Together they prove that:
 
 - OrbitFabric source identities remain unchanged;
 - target placement changes only where the Profile changes;
 - packet membership follows telemetry placement;
 - both layouts generate and build as native F Prime projects;
-- generated dictionaries resolve the projected downstream identities.
+- generated dictionaries resolve the projected downstream identities;
+- provider-native FPP semantic observation agrees with the explicit Projection Profile and Integration Result intent.
 
-For a released version, use the matching `v0.1.1` source archive only to access the Reference Example files and runner scripts. Keep the adapter product itself installed from the published release wheel.
+For a released version, use the matching `v0.1.2` source archive or checkout to access the Reference Example files and runner scripts. Keep the adapter product itself installed from the published release wheel.
 
 ## Where to go next
 
 As a user:
 
-- [Reference Example](reference-example.md)
+- [Reference Examples](reference-example.md)
 - [F Prime Projection Profile](projection-profile.md)
 - [Core input and result boundary](core-input-and-result.md)
 - [Integration Coverage](integration-coverage.md)
