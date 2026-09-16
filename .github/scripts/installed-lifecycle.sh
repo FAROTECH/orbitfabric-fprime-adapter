@@ -97,8 +97,20 @@ for name in (
     assert report[name]["status"] == "PASS", (name, report[name])
 PY
 
+EXPECTED_VERSION="$(python - <<'PY'
+import json
+from pathlib import Path
+
+record = json.loads(
+    Path("/tmp/orbitfabric-fprime-installed-lifecycle/evidence/install.json").read_text(
+        encoding="utf-8"
+    )
+)
+print(record["release_version"])
+PY
+)"
 "$EXECUTABLE" --version | tee "$evidence/console-version.txt"
-grep -Fxq "orbitfabric-fprime 0.1.1" "$evidence/console-version.txt"
+grep -Fxq "orbitfabric-fprime $EXPECTED_VERSION" "$evidence/console-version.txt"
 
 orbitfabric adapter remove "$INSTANCE_ID" --json | tee "$evidence/remove.json"
 orbitfabric adapter list --json | tee "$evidence/final-inventory.json"
