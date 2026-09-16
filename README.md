@@ -27,9 +27,9 @@ Start with **[Getting Started](docs/getting-started.md)**.
 
 ### I want to try the adapter
 
-Start with the **[Reference Example: Stable Mission Contract, Evolving F Prime Architecture](examples/reference-contract-evolution/README.md)**.
+The repository provides two complementary executable examples over the same OrbitFabric mission contract and the same explicit F Prime Profiles.
 
-It demonstrates the central architectural property of this adapter:
+**[Reference Example: Stable Mission Contract, Evolving F Prime Architecture](examples/reference-contract-evolution/README.md)** asks whether the native F Prime architecture can evolve while OrbitFabric mission identity stays stable:
 
 ```text
 same OrbitFabric mission contract
@@ -37,9 +37,22 @@ same OrbitFabric mission contract
     -> Profile B -> split F Prime placement
 ```
 
-The OrbitFabric source identities stay stable while explicit F Prime component and instance placement evolves. Both layouts have been materialized into native F Prime projects and accepted through `fprime-util generate`, `fprime-util build` and generated dictionary verification against the exact supported F Prime lane.
+The OrbitFabric source identities stay stable while explicit F Prime component and instance placement evolves. Both layouts are materialized into native F Prime projects and accepted through `fprime-util generate`, `fprime-util build` and generated dictionary verification against the exact supported F Prime lane.
 
-This is intentionally not an F Prime project generator. It is a reviewable bridge from stable mission-level contract identity to project-owned native F Prime architecture.
+**[Reference Example: Provider-Native Semantic Reconciliation](examples/reference-semantic-reconciliation/README.md)** asks a different question: did the provider-native FPP semantic model actually interpret the projected intent as expected?
+
+```text
+OrbitFabric source identity
+    -> explicit Projection Profile intent
+    -> adapter FPP projection
+    -> native FPP composition
+    -> fpp-to-json semantic observation
+    -> fail-closed reconciliation evidence
+```
+
+It verifies component and instance placement, local allocations, symbols, packet membership and generated-source provenance through the version-matched `fprime-python-model` API. It remains on the same supported F Prime 4.2.2 / FPP 3.2.0 lane and does not widen compatibility.
+
+Together the examples show both architectural decoupling and provider-native traceability. This adapter is intentionally not an F Prime project generator; it is a reviewable bridge from stable mission-level contract identity to project-owned native F Prime architecture.
 
 ### I want to develop or contribute
 
@@ -97,7 +110,7 @@ OrbitFabric owns stable mission-level identity and generic integration contracts
 
 That separation allows an F Prime project to refactor its native architecture without forcing the upstream mission contract to become an F Prime architecture model.
 
-The Reference Example makes this property executable rather than merely descriptive.
+The two Reference Examples make both the architectural separation and the provider-native reconciliation path executable rather than merely descriptive.
 
 ## Consumer execution model
 
@@ -136,7 +149,7 @@ F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
 FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-Canonical CI has observed this exact lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build`, generated dictionary conformance and a live F Prime GDS closed loop. No broader F Prime or FPP version range is currently claimed.
+Canonical CI has observed this exact lane through adapter wheel installation, FPP generation, `fprime-util generate`, `fprime-util build`, generated dictionary conformance, provider-native semantic reconciliation and a live F Prime GDS closed loop. No broader F Prime or FPP version range is currently claimed.
 
 See [Target compatibility](docs/target-compatibility.md).
 
@@ -149,7 +162,9 @@ Core contract conformance
         +
 adapter-owned tests
         +
-consumer Reference Example
+consumer Reference Examples
+        +
+provider-native FPP semantic reconciliation
         +
 native two-layout F Prime generate/build/dictionary acceptance
         +
@@ -162,7 +177,23 @@ release proof and published-byte verification
 external greenfield installation and execution
 ```
 
-Core conformance does not substitute for downstream-native acceptance, and native acceptance does not substitute for release/publication evidence.
+These layers have intentionally different meanings:
+
+```text
+generated FPP fragments
+    show what the adapter emitted
+
+provider-native semantic reconciliation
+    shows what the FPP semantic model understood
+
+generated dictionary acceptance
+    shows final provider-resolved operational identities
+
+native build / GDS acceptance
+    shows downstream build and selected runtime behavior
+```
+
+Core conformance does not substitute for downstream-native acceptance, semantic reconciliation does not replace generated dictionary or runtime evidence, and native acceptance does not substitute for release/publication evidence.
 
 ## Integration Coverage
 
@@ -187,7 +218,8 @@ version                     0.1.1
 ### User
 
 - [Getting Started](docs/getting-started.md)
-- [Reference Example](examples/reference-contract-evolution/README.md)
+- [Reference Example: Contract Evolution](examples/reference-contract-evolution/README.md)
+- [Reference Example: Semantic Reconciliation](examples/reference-semantic-reconciliation/README.md)
 - [F Prime Projection Profile](docs/projection-profile.md)
 - [Core input and result boundary](docs/core-input-and-result.md)
 - [Integration Coverage](coverage/integration-coverage.md)
