@@ -48,6 +48,12 @@ jobs:
           ref: 934d79ddbe4ad1286e56a5575fed34fb0c44a1bb
           path: _semantic/python-model
 
+      - name: Set up Java required by FPP 3.2
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "11"
+
       - name: Set up Python required by semantic consumer
         uses: actions/setup-python@v5
         with:
