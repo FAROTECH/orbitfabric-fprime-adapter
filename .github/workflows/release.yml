@@ -34,12 +34,33 @@ jobs:
         shell: bash
         run: |
           python - <<'PY' | tee /tmp/release-version.env
+          import json
+          import runpy
           import tomllib
           from pathlib import Path
 
-          payload = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
-          version = payload["project"]["version"]
-          print(f"VERSION={version}")
+          root = Path.cwd()
+          payload = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+          project_version = payload["project"]["version"]
+
+          constants = runpy.run_path(
+              str(root / "src/orbitfabric_fprime_adapter/constants.py")
+          )
+          canonical_version = constants["VERSION"]
+
+          manifest = json.loads(
+              (root / "src/orbitfabric_fprime_adapter/integration_package.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+          manifest_version = manifest["adapter"]["version"]
+
+          assert project_version == canonical_version == manifest_version, (
+              project_version,
+              canonical_version,
+              manifest_version,
+          )
+          print(f"VERSION={project_version}")
           PY
           source /tmp/release-version.env
           test "$GITHUB_REF_NAME" = "v$VERSION"
