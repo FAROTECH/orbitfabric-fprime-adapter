@@ -53,13 +53,15 @@ command completion = OK
 
 The synthetic mode-to-temperature behavior belongs only to the acceptance fixture. It is not OrbitFabric mission semantics and is not generated runtime behavior owned by the adapter.
 
-The Reference Example adds a separate native architecture-evolution proof. One stable Core Integration Input Set is projected through two explicit F Prime Profiles. Both monolithic and split placements pass native F Prime generation and build, both generated dictionaries resolve the projected entities, packet membership follows telemetry placement, and the OrbitFabric source identity set remains unchanged while F Prime resolved identity evolves with the Profile.
+The Reference Examples add two separate downstream proofs over the same accepted lane. Contract Evolution proves one stable Core Integration Input Set across explicit monolithic and split F Prime placements through native generation, build and dictionary resolution. Semantic Reconciliation proves that the provider-native FPP semantic model resolves the explicit Profile and Integration Result intent with the expected component, instance, local allocation, packet membership and source provenance.
 
 ## Release lineage
 
 `v0.1.0` established the first published-byte and external greenfield acceptance for this exact F Prime/FPP lane.
 
-`0.1.1` preserves the same target lane and integration behavior. Its patch scope is release identity metadata and release-control hardening, not F Prime compatibility expansion.
+`v0.1.1` preserves the same target lane and integration behavior. Its patch scope is release identity metadata and release-control hardening, not F Prime compatibility expansion.
+
+`v0.1.2` also preserves the same target lane and integration behavior. Its patch scope is provider-native semantic reconciliation, reproducible public Reference Examples, repository usability and stronger release-version coherence controls. It does not widen the adapter operation, Profile semantics, Core contract boundary or F Prime/FPP compatibility claim.
 
 Release publication evidence remains separate from target compatibility evidence.
 
