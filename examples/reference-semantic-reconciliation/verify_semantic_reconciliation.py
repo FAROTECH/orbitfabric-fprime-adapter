@@ -19,7 +19,6 @@ from fprime_python_model.fpp_ast import fpp_ast
 from fprime_python_model.model import FprimePythonModel
 from fprime_python_model.semantics.symbol import ComponentSymbol
 
-
 EXPECTED_FPP_VERSION = "v3.2.0"
 
 FAMILIES = (
