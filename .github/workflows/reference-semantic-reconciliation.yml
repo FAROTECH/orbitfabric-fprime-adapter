@@ -1,0 +1,149 @@
+name: Reference Semantic Reconciliation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-reconciliation:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout adapter
+        uses: actions/checkout@v4
+
+      - name: Checkout exact OrbitFabric Core baseline
+        uses: actions/checkout@v4
+        with:
+          repository: FAROTECH/orbitfabric
+          ref: 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
+          path: _semantic/core
+
+      - name: Checkout exact F Prime source
+        uses: actions/checkout@v4
+        with:
+          repository: nasa/fprime
+          ref: 8a62e455a90b6d4f498c332d45d65a2a819988d8
+          path: _semantic/fprime
+          submodules: recursive
+
+      - name: Checkout exact FPP source
+        uses: actions/checkout@v4
+        with:
+          repository: nasa/fpp
+          ref: 93f484b7521a8e8894cba25b26e633cc87d8e37a
+          path: _semantic/fpp
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Checkout version-matched semantic consumer
+        uses: actions/checkout@v4
+        with:
+          repository: fprime-community/fprime-python-model
+          ref: 934d79ddbe4ad1286e56a5575fed34fb0c44a1bb
+          path: _semantic/python-model
+
+      - name: Set up Python required by semantic consumer
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install exact supported lane and example tooling
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install build
+          python -m pip install -r ./_semantic/fprime/requirements.txt
+          python -m pip install ./_semantic/core
+          python -m build --wheel
+          python -m pip install --force-reinstall dist/*.whl
+          python -m pip install ./_semantic/python-model
+
+          test "$(git -C ./_semantic/fprime rev-parse HEAD)" = "8a62e455a90b6d4f498c332d45d65a2a819988d8"
+          test "$(git -C ./_semantic/fpp rev-parse HEAD)" = "93f484b7521a8e8894cba25b26e633cc87d8e37a"
+          test "$(git -C ./_semantic/python-model rev-parse HEAD)" = "934d79ddbe4ad1286e56a5575fed34fb0c44a1bb"
+
+          python - <<'PY'
+          import importlib.metadata as metadata
+
+          assert metadata.version("fprime-fpp") == "3.2.0"
+          assert metadata.version("orbitfabric-fprime-adapter") == "0.1.1"
+          print("fprime-fpp", metadata.version("fprime-fpp"))
+          print("fprime-python-model", metadata.version("fprime-python-model"))
+          print("orbitfabric-fprime-adapter", metadata.version("orbitfabric-fprime-adapter"))
+          PY
+
+      - name: Produce canonical projections and materialize both layouts
+        run: |
+          set -euo pipefail
+          WORK="$PWD/.semantic-reconciliation-work"
+          rm -rf "$WORK"
+          mkdir -p "$WORK/semantic/layout-a" "$WORK/semantic/layout-b" "$WORK/evidence"
+
+          python examples/reference-contract-evolution/verify_reference_example.py \
+            --core-root "$PWD/_semantic/core" \
+            --work-dir "$WORK/consumer"
+
+          for L in a b; do
+            python native_acceptance/reference_example/materialize_layout.py \
+              --fprime-root "$PWD/_semantic/fprime" \
+              --projection "$WORK/consumer/layout-$L" \
+              --layout "$L" \
+              --output-project "$WORK/native-$L"
+          done
+
+      - name: Generate and export provider-native FPP semantic models
+        run: |
+          set -euo pipefail
+          WORK="$PWD/.semantic-reconciliation-work"
+
+          for L in a b; do
+            pushd "$WORK/native-$L/Ref"
+            fprime-util generate -DFPRIME_ENABLE_JSON_MODEL_GENERATION=ON
+            cd Top
+            DEPENDENCIES=$(fpp-depend ../build-fprime-automatic-native/locs.fpp *.fpp)
+            fpp-to-json \
+              -d "$WORK/semantic/layout-$L" \
+              ${DEPENDENCIES} *.fpp
+            popd
+          done
+
+      - name: Reconcile explicit intent against provider-native semantics
+        run: |
+          set -euo pipefail
+          WORK="$PWD/.semantic-reconciliation-work"
+
+          python examples/reference-semantic-reconciliation/verify_semantic_reconciliation.py \
+            --layout-a-ast "$WORK/semantic/layout-a/fpp-ast.json" \
+            --layout-a-locations "$WORK/semantic/layout-a/fpp-loc-map.json" \
+            --layout-a-analysis "$WORK/semantic/layout-a/fpp-analysis.json" \
+            --layout-b-ast "$WORK/semantic/layout-b/fpp-ast.json" \
+            --layout-b-locations "$WORK/semantic/layout-b/fpp-loc-map.json" \
+            --layout-b-analysis "$WORK/semantic/layout-b/fpp-analysis.json" \
+            --profile-a examples/reference-contract-evolution/profile-a-monolithic.yaml \
+            --profile-b examples/reference-contract-evolution/profile-b-split.yaml \
+            --result-a "$WORK/consumer/layout-a/integration_result.json" \
+            --result-b "$WORK/consumer/layout-b/integration_result.json" \
+            --input-set-manifest "$WORK/consumer/input-set/integration_input_manifest.json" \
+            --output "$WORK/evidence/semantic-reconciliation-proof.json"
+
+      - name: Inventory semantic reconciliation evidence
+        if: always()
+        run: |
+          find .semantic-reconciliation-work/evidence -type f -print -exec sha256sum {} \; || true
+          find .semantic-reconciliation-work/semantic -type f -print -exec sha256sum {} \; || true
+
+      - name: Upload semantic reconciliation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fprime-reference-semantic-reconciliation
+          path: |
+            .semantic-reconciliation-work/evidence
+            .semantic-reconciliation-work/semantic
+          if-no-files-found: error
