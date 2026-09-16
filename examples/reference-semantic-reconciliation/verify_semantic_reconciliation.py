@@ -475,7 +475,10 @@ def main() -> int:
         if (a["component"], a["instance"]) == (b["component"], b["instance"]):
             raise RuntimeError(f"{source}: provider-native placement did not evolve")
 
-    if records_a[PACKET_SOURCE]["observed"]["members"] == records_b[PACKET_SOURCE]["observed"]["members"]:
+    if (
+        records_a[PACKET_SOURCE]["observed"]["members"]
+        == records_b[PACKET_SOURCE]["observed"]["members"]
+    ):
         raise RuntimeError("packet membership did not follow telemetry placement")
 
     proof = {
@@ -510,7 +513,9 @@ def main() -> int:
             "provider_global_identity_closure": False,
         },
         "limitations": [
-            "FPP 3.2 does not expose dictionaryMap. Final provider-resolved global identity closure is outside this example proof and remains covered by downstream dictionary evidence."
+            "FPP 3.2 does not expose dictionaryMap. Final provider-resolved global identity "
+            "closure is outside this example proof and remains covered by downstream "
+            "dictionary evidence."
         ],
         "note": (
             "This is an example-owned evidence artifact, not a stable adapter API or Core contract."
