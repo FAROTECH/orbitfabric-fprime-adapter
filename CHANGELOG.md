@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.1.2
+
 ### Added
 
 - Added the provider-native semantic reconciliation Reference Example over the existing supported F Prime 4.2.2 / FPP 3.2.0 lane.
@@ -15,6 +17,11 @@ All notable changes to this project will be documented in this file.
 - Made the Java 11 requirement explicit in semantic-reconciliation CI instead of relying on the hosted runner image.
 - Aligned MkDocs navigation and user documentation with both Reference Examples.
 - Ignored local example and native-acceptance workspaces so supported local runs do not dirty the checkout.
+
+### Compatibility
+
+- Kept `fpp_contract_projection`, Projection Profile semantics, Integration Result behavior and the exact supported F Prime 4.2.2 / FPP 3.2.0 lane unchanged.
+- Did not widen the adapter API, Core contract surface or target compatibility claim.
 
 ## 0.1.1
 
