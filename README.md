@@ -52,6 +52,8 @@ OrbitFabric source identity
 
 It verifies component and instance placement, local allocations, symbols, packet membership and generated-source provenance through the version-matched `fprime-python-model` API. It remains on the same supported F Prime 4.2.2 / FPP 3.2.0 lane and does not widen compatibility.
 
+Want to reproduce that path from clean checkouts? Follow **[Run a clean local greenfield](examples/reference-semantic-reconciliation/README.md#run-a-clean-local-greenfield)**.
+
 Together the examples show both architectural decoupling and provider-native traceability. This adapter is intentionally not an F Prime project generator; it is a reviewable bridge from stable mission-level contract identity to project-owned native F Prime architecture.
 
 ### I want to develop or contribute
