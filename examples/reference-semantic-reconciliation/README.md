@@ -160,45 +160,195 @@ That final identity remains covered by the adapter's existing generated-dictiona
 
 FPP 3.3 adds a materially stronger `dictionaryMap` capability, but it also belongs to a different F Prime/FPP semantic compatibility lane. The adapter does not widen its supported target versions through this example.
 
-## Run the proof
+## Run a clean local greenfield
 
-The permanent CI job performs the complete path. Conceptually it does the following.
+The permanent CI workflow is the canonical automated proof. The following path is intended for someone who wants to reproduce the same semantic-reconciliation flow personally from clean checkouts and an isolated Python environment.
 
-First produce the normal Reference Example projections:
+### Prerequisites
 
-```bash
-python examples/reference-contract-evolution/verify_reference_example.py \
-  --core-root /path/to/orbitfabric \
-  --work-dir /tmp/of-fprime-semantic/consumer
+Use a Linux or WSL environment with:
+
+```text
+Git
+Python 3.12 with venv support
+CMake and a normal native C/C++ build toolchain
+Java 11 JDK with java available on PATH
 ```
 
-Then materialize both project-owned F Prime layouts using the existing native Reference Example harness, enable FPP JSON model generation, and export each provider semantic model with `fpp-to-json`.
+`syft` is optional for this example. F Prime may warn that SBOM generation is skipped when `syft` is not installed; that does not affect semantic reconciliation.
 
-Finally run:
+### 1. Create a clean workspace and clone the exact inputs
+
+```bash
+mkdir orbitfabric-fprime-semantic-greenfield
+cd orbitfabric-fprime-semantic-greenfield
+
+git clone https://github.com/FAROTECH/orbitfabric-fprime-adapter.git adapter
+
+git clone https://github.com/FAROTECH/orbitfabric.git core
+git -C core checkout 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
+
+git clone --recursive https://github.com/nasa/fprime.git fprime
+git -C fprime checkout 8a62e455a90b6d4f498c332d45d65a2a819988d8
+git -C fprime submodule update --init --recursive
+
+git clone https://github.com/nasa/fpp.git fpp
+git -C fpp checkout 93f484b7521a8e8894cba25b26e633cc87d8e37a
+
+git clone https://github.com/fprime-community/fprime-python-model.git python-model
+git -C python-model checkout 934d79ddbe4ad1286e56a5575fed34fb0c44a1bb
+```
+
+The standalone FPP checkout mirrors the source pin used by CI. The `fpp-to-json` and `fpp-depend` commands used below are installed through the pinned F Prime requirements and must report FPP 3.2.0.
+
+### 2. Create an isolated Python 3.12 environment
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
+python -m pip install build
+python -m pip install -r ./fprime/requirements.txt
+python -m pip install ./core
+
+(
+  cd adapter
+  python -m build --wheel
+  python -m pip install --force-reinstall dist/*.whl
+)
+
+python -m pip install ./python-model
+```
+
+Check that the tools come from the clean environment and that the supported FPP lane is active:
+
+```bash
+which python
+which fprime-util
+which fpp-to-json
+which fpp-depend
+
+java -version
+fpp-to-json --help | head
+fpp-depend --help | head
+
+python - <<'PY'
+import importlib.metadata as metadata
+
+print("fprime-fpp", metadata.version("fprime-fpp"))
+print("fprime-python-model", metadata.version("fprime-python-model"))
+print("orbitfabric-fprime-adapter", metadata.version("orbitfabric-fprime-adapter"))
+
+assert metadata.version("fprime-fpp") == "3.2.0"
+assert metadata.version("orbitfabric-fprime-adapter") == "0.1.1"
+PY
+```
+
+Also verify the exact source baselines:
+
+```bash
+test "$(git -C core rev-parse HEAD)" = "4377d6656c62aa1dc19a7ed81d2de872b6b22ccd"
+test "$(git -C fprime rev-parse HEAD)" = "8a62e455a90b6d4f498c332d45d65a2a819988d8"
+test "$(git -C fpp rev-parse HEAD)" = "93f484b7521a8e8894cba25b26e633cc87d8e37a"
+test "$(git -C python-model rev-parse HEAD)" = "934d79ddbe4ad1286e56a5575fed34fb0c44a1bb"
+```
+
+### 3. Produce the two OrbitFabric projections and native F Prime layouts
+
+Run from the greenfield workspace root:
+
+```bash
+ROOT="$PWD"
+ADAPTER="$ROOT/adapter"
+WORK="$ADAPTER/.semantic-reconciliation-work"
+
+cd "$ADAPTER"
+rm -rf "$WORK"
+mkdir -p "$WORK/semantic/layout-a" "$WORK/semantic/layout-b" "$WORK/evidence"
+
+python examples/reference-contract-evolution/verify_reference_example.py \
+  --core-root "$ROOT/core" \
+  --work-dir "$WORK/consumer"
+
+for L in a b; do
+  python native_acceptance/reference_example/materialize_layout.py \
+    --fprime-root "$ROOT/fprime" \
+    --projection "$WORK/consumer/layout-$L" \
+    --layout "$L" \
+    --output-project "$WORK/native-$L"
+done
+```
+
+### 4. Let F Prime and FPP produce the provider-native semantic models
+
+```bash
+for L in a b; do
+  pushd "$WORK/native-$L/Ref"
+
+  fprime-util generate -DFPRIME_ENABLE_JSON_MODEL_GENERATION=ON
+
+  cd Top
+  DEPENDENCIES=$(fpp-depend ../build-fprime-automatic-native/locs.fpp *.fpp)
+  fpp-to-json \
+    -d "$WORK/semantic/layout-$L" \
+    ${DEPENDENCIES} *.fpp
+
+  popd
+done
+```
+
+Each semantic directory should now contain:
+
+```text
+fpp-ast.json
+fpp-loc-map.json
+fpp-analysis.json
+```
+
+### 5. Reconcile explicit OrbitFabric intent against provider-native observation
 
 ```bash
 python examples/reference-semantic-reconciliation/verify_semantic_reconciliation.py \
-  --layout-a-ast /tmp/of-fprime-semantic/semantic/layout-a/fpp-ast.json \
-  --layout-a-locations /tmp/of-fprime-semantic/semantic/layout-a/fpp-loc-map.json \
-  --layout-a-analysis /tmp/of-fprime-semantic/semantic/layout-a/fpp-analysis.json \
-  --layout-b-ast /tmp/of-fprime-semantic/semantic/layout-b/fpp-ast.json \
-  --layout-b-locations /tmp/of-fprime-semantic/semantic/layout-b/fpp-loc-map.json \
-  --layout-b-analysis /tmp/of-fprime-semantic/semantic/layout-b/fpp-analysis.json \
+  --layout-a-ast "$WORK/semantic/layout-a/fpp-ast.json" \
+  --layout-a-locations "$WORK/semantic/layout-a/fpp-loc-map.json" \
+  --layout-a-analysis "$WORK/semantic/layout-a/fpp-analysis.json" \
+  --layout-b-ast "$WORK/semantic/layout-b/fpp-ast.json" \
+  --layout-b-locations "$WORK/semantic/layout-b/fpp-loc-map.json" \
+  --layout-b-analysis "$WORK/semantic/layout-b/fpp-analysis.json" \
   --profile-a examples/reference-contract-evolution/profile-a-monolithic.yaml \
   --profile-b examples/reference-contract-evolution/profile-b-split.yaml \
-  --result-a /tmp/of-fprime-semantic/consumer/layout-a/integration_result.json \
-  --result-b /tmp/of-fprime-semantic/consumer/layout-b/integration_result.json \
-  --input-set-manifest /tmp/of-fprime-semantic/consumer/input-set/integration_input_manifest.json \
-  --output /tmp/of-fprime-semantic/semantic-reconciliation-proof.json
+  --result-a "$WORK/consumer/layout-a/integration_result.json" \
+  --result-b "$WORK/consumer/layout-b/integration_result.json" \
+  --input-set-manifest "$WORK/consumer/input-set/integration_input_manifest.json" \
+  --output "$WORK/evidence/semantic-reconciliation-proof.json"
 ```
 
-The machine-readable output is:
+A successful run produces:
 
 ```text
-semantic-reconciliation-proof.json
+.semantic-reconciliation-work/evidence/semantic-reconciliation-proof.json
 ```
 
-This artifact is example-owned evidence. It is not a stable adapter API and it is not an OrbitFabric Core contract.
+and reports a passing proof with all six stable OrbitFabric source identities reconciled across both layouts.
+
+The proof intentionally keeps:
+
+```text
+provider_global_identity_closure = false
+```
+
+because FPP 3.2 does not expose the final global dictionary identity through `dictionaryMap`.
+
+### Reproducibility notes
+
+A clean local run should reproduce the semantic result, but two environment-sensitive details should not be mistaken for semantic drift:
+
+1. `input_set_sha256` identifies the exact coherent Core Integration Input Set, not semantic equivalence between independently generated sets. Core surfaces include provenance such as the resolved mission directory, so relocating the same Mission Model can change exact surface bytes and therefore the input-set digest.
+2. The proof also retains source and provenance paths. Raw proof bytes can therefore differ across workspace locations even when every semantic reconciliation record is equivalent.
+3. `fprime-python-model` derives its package version from Git metadata through `setuptools_scm`. A full tag-aware clone at the pinned commit can report `3.2.0`, while a shallow or tagless checkout can report a development-form version. The authoritative compatibility anchor for this example is the pinned commit `934d79ddbe4ad1286e56a5575fed34fb0c44a1bb`.
+
+These differences do not widen the supported lane and do not change the meaning of a passing semantic reconciliation proof.
 
 ## Two layouts, two observed native placements
 
