@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-
 from fprime_python_model.fpp_ast import fpp_ast
 from fprime_python_model.model import FprimePythonModel
 from fprime_python_model.semantics.symbol import ComponentSymbol
