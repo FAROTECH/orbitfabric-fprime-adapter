@@ -7,7 +7,6 @@ This guide is for contributors working on the adapter source. Normal consumers s
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
@@ -79,10 +78,10 @@ CI has observed generation, build, generated dictionary conformance, provider-na
 The current source version is:
 
 ```text
-0.1.1
+0.1.2
 ```
 
-`v0.1.0` remains the immutable first stable release. The `0.1.1` patch retains the same F Prime integration behavior while aligning release metadata with the canonical Adapter Source Coordinate.
+`v0.1.0` remains the immutable first stable release. `v0.1.1` corrected release identity metadata. The `0.1.2` patch keeps adapter behavior and the exact F Prime/FPP lane unchanged while freezing the two public Reference Examples, provider-native semantic reconciliation and their reproducible local paths in one tagged repository state.
 
 Source development, release publication and post-publication acceptance remain distinct states:
 
@@ -94,4 +93,4 @@ source under development
     != external greenfield acceptance
 ```
 
-Release tooling derives the default Source Coordinate from the adapter's canonical product identity. CI verifies that generated release material preserves that exact structured identity before the release publication pipeline can publish it.
+Release tooling derives the default Source Coordinate from the adapter's canonical product identity. CI verifies that project metadata, canonical package identity and the Integration Package Manifest agree on the release version before release material can be published. Generated release material must preserve the exact structured Source Coordinate and version identity.
