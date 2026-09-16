@@ -6,6 +6,8 @@ from importlib.resources import files
 
 from orbitfabric.conformance.integration_contracts import validate_manifest
 
+from orbitfabric_fprime_adapter.constants import VERSION
+
 EXPECTED_CAPABILITIES = [
     "profile_validation",
     "projection",
@@ -23,7 +25,7 @@ def test_manifest_conforms_to_core_contract() -> None:
 
     assert manifest["adapter"] == {
         "id": "orbitfabric-fprime",
-        "version": "0.1.1",
+        "version": VERSION,
     }
     assert manifest["integration"]["id"] == "orbitfabric-fprime"
     assert manifest["capabilities"] == EXPECTED_CAPABILITIES

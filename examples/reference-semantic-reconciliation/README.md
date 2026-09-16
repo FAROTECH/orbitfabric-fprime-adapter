@@ -184,6 +184,7 @@ mkdir orbitfabric-fprime-semantic-greenfield
 cd orbitfabric-fprime-semantic-greenfield
 
 git clone https://github.com/FAROTECH/orbitfabric-fprime-adapter.git adapter
+git -C adapter checkout v0.1.2
 
 git clone https://github.com/FAROTECH/orbitfabric.git core
 git -C core checkout 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
@@ -199,7 +200,7 @@ git clone https://github.com/fprime-community/fprime-python-model.git python-mod
 git -C python-model checkout 934d79ddbe4ad1286e56a5575fed34fb0c44a1bb
 ```
 
-The standalone FPP checkout mirrors the source pin used by CI. The `fpp-to-json` and `fpp-depend` commands used below are installed through the pinned F Prime requirements and must report FPP 3.2.0.
+For development against unreleased adapter source, replace the release tag with the branch or commit you intend to verify. The standalone FPP checkout mirrors the source pin used by CI. The `fpp-to-json` and `fpp-depend` commands used below are installed through the pinned F Prime requirements and must report FPP 3.2.0.
 
 ### 2. Create an isolated Python 3.12 environment
 
@@ -241,13 +242,14 @@ print("fprime-python-model", metadata.version("fprime-python-model"))
 print("orbitfabric-fprime-adapter", metadata.version("orbitfabric-fprime-adapter"))
 
 assert metadata.version("fprime-fpp") == "3.2.0"
-assert metadata.version("orbitfabric-fprime-adapter") == "0.1.1"
+assert metadata.version("orbitfabric-fprime-adapter") == "0.1.2"
 PY
 ```
 
 Also verify the exact source baselines:
 
 ```bash
+test "$(git -C adapter describe --tags --exact-match)" = "v0.1.2"
 test "$(git -C core rev-parse HEAD)" = "4377d6656c62aa1dc19a7ed81d2de872b6b22ccd"
 test "$(git -C fprime rev-parse HEAD)" = "8a62e455a90b6d4f498c332d45d65a2a819988d8"
 test "$(git -C fpp rev-parse HEAD)" = "93f484b7521a8e8894cba25b26e633cc87d8e37a"
@@ -342,7 +344,7 @@ because FPP 3.2 does not expose the final global dictionary identity through `di
 
 ### Reproducibility notes
 
-A clean local run should reproduce the semantic result, but two environment-sensitive details should not be mistaken for semantic drift:
+A clean local run should reproduce the semantic result, but three environment-sensitive details should not be mistaken for semantic drift:
 
 1. `input_set_sha256` identifies the exact coherent Core Integration Input Set, not semantic equivalence between independently generated sets. Core surfaces include provenance such as the resolved mission directory, so relocating the same Mission Model can change exact surface bytes and therefore the input-set digest.
 2. The proof also retains source and provenance paths. Raw proof bytes can therefore differ across workspace locations even when every semantic reconciliation record is equivalent.

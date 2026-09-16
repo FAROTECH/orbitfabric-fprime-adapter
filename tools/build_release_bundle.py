@@ -31,6 +31,17 @@ def project_version(pyproject_path: Path) -> str:
     return version
 
 
+def integration_package_adapter_version(manifest_path: Path) -> str:
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    adapter = payload.get("adapter")
+    if not isinstance(adapter, dict):
+        raise ValueError("Integration Package Manifest must define adapter metadata")
+    version = adapter.get("version")
+    if not isinstance(version, str) or not version:
+        raise ValueError("Integration Package Manifest adapter.version must be non-empty")
+    return version
+
+
 def canonical_source_coordinate(root: Path) -> dict[str, str]:
     constants_path = root / "src" / "orbitfabric_fprime_adapter" / "constants.py"
     if not constants_path.is_file():
@@ -183,7 +194,14 @@ def main(argv: list[str] | None = None) -> int:
     authority = args.authority or canonical_coordinate["authority"]
     publisher = args.publisher or canonical_coordinate["publisher"]
     name = args.name or canonical_coordinate["name"]
-    version = args.release_version or project_version(args.pyproject)
+    version = (args.release_version or project_version(args.pyproject)).strip()
+    manifest_version = integration_package_adapter_version(manifest).strip()
+
+    if manifest_version != version:
+        raise SystemExit(
+            "Release version and Integration Package adapter.version differ: "
+            f"release={version!r}, manifest={manifest_version!r}"
+        )
 
     required_values = [
         ("authority", authority),
@@ -206,7 +224,7 @@ def main(argv: list[str] | None = None) -> int:
         authority=authority.strip(),
         publisher=publisher.strip(),
         name=name.strip(),
-        release_version=version.strip(),
+        release_version=version,
         artifact_id=args.artifact_id.strip(),
         artifact_type=args.artifact_type.strip(),
     )

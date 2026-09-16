@@ -6,7 +6,7 @@ OPERATION_ID = "fpp_contract_projection"
 DISTRIBUTION_NAME = "orbitfabric-fprime-adapter"
 CONSOLE_COMMAND = "orbitfabric-fprime"
 PYTHON_PACKAGE = "orbitfabric_fprime_adapter"
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 SOURCE_COORDINATE = {
     "authority": "github.com/FAROTECH",

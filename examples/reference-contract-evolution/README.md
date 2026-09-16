@@ -127,7 +127,7 @@ The adapter does not infer a component architecture from OrbitFabric subsystems.
 
 ## Run the consumer proof
 
-Install the released adapter product and the exact Core baseline, then obtain the matching `v0.1.1` repository source for the example files and execute:
+Install the released adapter product and the exact Core baseline, then obtain the matching `v0.1.2` repository source for the example files and execute:
 
 ```bash
 python examples/reference-contract-evolution/verify_reference_example.py \
@@ -196,13 +196,14 @@ git clone https://github.com/FAROTECH/orbitfabric.git core
 git clone --recursive https://github.com/nasa/fprime.git fprime
 git clone https://github.com/nasa/fpp.git fpp
 
+git -C adapter checkout v0.1.2
 git -C core checkout 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
 git -C fprime checkout 8a62e455a90b6d4f498c332d45d65a2a819988d8
 git -C fprime submodule update --init --recursive
 git -C fpp checkout 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-The adapter checkout may stay on the current `main` when testing current source. For archival reproduction, pin the adapter commit you intend to verify.
+For development against unreleased source, the adapter checkout may instead stay on the intended branch or commit. For release reproduction, use the exact release tag.
 
 ### 2. Create an isolated Python environment
 
@@ -231,10 +232,11 @@ import importlib.metadata as metadata
 print("orbitfabric", metadata.version("orbitfabric"))
 print("orbitfabric-fprime-adapter", metadata.version("orbitfabric-fprime-adapter"))
 print("fprime-fpp", metadata.version("fprime-fpp"))
+
+assert metadata.version("orbitfabric-fprime-adapter") == "0.1.2"
+assert metadata.version("fprime-fpp") == "3.2.0"
 PY
 ```
-
-For the accepted `0.1` lane, `fprime-fpp` must be `3.2.0`.
 
 ### 3. Run the complete native proof
 

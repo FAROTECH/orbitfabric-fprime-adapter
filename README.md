@@ -4,7 +4,7 @@
 
 The adapter projects explicit OrbitFabric contract entities into FPP declaration fragments while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
 
-> **Release baseline:** `0.1.1`. This patch preserves the accepted F Prime/FPP behavior of the `0.1` line and aligns Adapter Source Coordinate metadata with the canonical product identity.
+> **Release baseline:** `0.1.2`. This patch preserves the accepted F Prime/FPP behavior of the `0.1` line while adding provider-native semantic reconciliation, clean local reproduction paths for both public Reference Examples and consolidated repository navigation.
 
 ## Choose your path
 
@@ -234,7 +234,7 @@ console command             orbitfabric-fprime
 adapter / integration id    orbitfabric-fprime
 logical key                 orbitfabric/fprime
 source coordinate           github.com/FAROTECH:orbitfabric/fprime
-version                     0.1.1
+version                     0.1.2
 ```
 
 ## Documentation
@@ -260,6 +260,7 @@ version                     0.1.1
 
 ### Release
 
+- [0.1.2 release notes](docs/releases/0.1.2.md)
 - [0.1.1 release notes](docs/releases/0.1.1.md)
 - [0.1.0 release notes](docs/releases/0.1.0.md)
 
