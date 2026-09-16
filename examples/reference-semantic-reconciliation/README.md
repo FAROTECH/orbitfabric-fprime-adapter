@@ -294,7 +294,7 @@ for L in a b; do
   DEPENDENCIES=$(fpp-depend ../build-fprime-automatic-native/locs.fpp *.fpp)
   fpp-to-json \
     -d "$WORK/semantic/layout-$L" \
-    ${DEPENDENDENCIES} *.fpp
+    ${DEPENDENCIES} *.fpp
 
   popd
 done
@@ -344,7 +344,7 @@ because FPP 3.2 does not expose the final global dictionary identity through `di
 
 ### Reproducibility notes
 
-A clean local run should reproduce the semantic result, but two environment-sensitive details should not be mistaken for semantic drift:
+A clean local run should reproduce the semantic result, but three environment-sensitive details should not be mistaken for semantic drift:
 
 1. `input_set_sha256` identifies the exact coherent Core Integration Input Set, not semantic equivalence between independently generated sets. Core surfaces include provenance such as the resolved mission directory, so relocating the same Mission Model can change exact surface bytes and therefore the input-set digest.
 2. The proof also retains source and provenance paths. Raw proof bytes can therefore differ across workspace locations even when every semantic reconciliation record is equivalent.
