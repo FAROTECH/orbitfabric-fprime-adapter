@@ -5,6 +5,7 @@ import json
 from importlib.resources import files
 
 from orbitfabric.conformance.integration_contracts import validate_manifest
+
 from orbitfabric_fprime_adapter.constants import VERSION
 
 EXPECTED_CAPABILITIES = [
