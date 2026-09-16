@@ -2,7 +2,7 @@
 
 The OrbitFabric F Prime Adapter projects selected OrbitFabric mission-contract entities into native FPP declaration fragments through explicit target bindings.
 
-The current release baseline is `0.1.1`. This patch preserves the accepted `0.1` F Prime/FPP behavior while aligning Adapter Source Coordinate metadata with the canonical product identity.
+The current release baseline is `0.1.2`. This patch keeps the accepted `0.1` adapter behavior and exact F Prime/FPP compatibility lane unchanged while adding provider-native semantic reconciliation, clean local reproduction paths for both public Reference Examples and consolidated repository navigation.
 
 ## Choose your path
 
@@ -55,5 +55,6 @@ docs/
 - [Target compatibility](target-compatibility.md)
 - [Integration Coverage](integration-coverage.md)
 - [Development and verification](development.md)
+- [0.1.2 release notes](releases/0.1.2.md)
 - [0.1.1 release notes](releases/0.1.1.md)
 - [0.1.0 release notes](releases/0.1.0.md)
