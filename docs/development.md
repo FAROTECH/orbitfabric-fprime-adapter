@@ -20,20 +20,48 @@ pytest -q
 mkdocs build --strict
 ```
 
+## Repository map
+
+```text
+src/
+    adapter product
+
+examples/
+    public executable integration stories
+
+native_acceptance/
+    concrete F Prime materialization and downstream acceptance
+
+docs/
+    user, architecture and contributor documentation
+```
+
+The public examples and the native acceptance harnesses are deliberately separate. The examples explain the integration property being demonstrated. The native harnesses ask the real F Prime toolchain to generate, build, resolve dictionaries and exercise selected runtime behavior.
+
 ## CI layers
 
 Canonical CI separates the product concerns deliberately:
 
 1. source quality, package tests and wheel construction;
 2. exact OrbitFabric Core input-contract conformance;
-3. consumer Reference Example acceptance;
+3. consumer Reference Example contract-evolution proof;
 4. native two-layout Reference Example generation, build and dictionary resolution;
-5. managed Adapter Manager lifecycle proof;
-6. exact F Prime/FPP native generation, build and dictionary conformance;
-7. F Prime GDS closed-loop runtime acceptance;
-8. provider-neutral release proof.
+5. provider-native FPP semantic reconciliation;
+6. managed Adapter Manager lifecycle proof;
+7. exact F Prime/FPP native static generation, build and dictionary conformance;
+8. F Prime GDS closed-loop runtime acceptance;
+9. provider-neutral release proof.
 
-These layers are not interchangeable. Core conformance does not imply F Prime compatibility, and F Prime native acceptance does not imply publication or external greenfield acceptance.
+These layers are not interchangeable. Core conformance does not imply F Prime compatibility, semantic reconciliation does not replace generated-dictionary or runtime evidence, and F Prime native acceptance does not imply publication or external greenfield acceptance.
+
+## Public local reproduction paths
+
+The repository exposes two bounded local paths for users who want to reproduce the public integration evidence:
+
+- [Contract Evolution Reference Example](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md), including the full native `run_native.sh` path;
+- [Semantic Reconciliation Reference Example](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-semantic-reconciliation/README.md), including the clean FPP semantic greenfield path.
+
+The default local workspaces used by these examples and native harnesses are ignored by Git so running a supported example does not dirty the checkout.
 
 ## Accepted downstream lane
 
@@ -44,7 +72,7 @@ F Prime  v4.2.2  @ 8a62e455a90b6d4f498c332d45d65a2a819988d8
 FPP      3.2.0   @ 93f484b7521a8e8894cba25b26e633cc87d8e37a
 ```
 
-CI has observed generation, build, generated dictionary conformance and GDS closed-loop behavior for this pair. The Reference Example also proves both its monolithic and split F Prime placements through native generation, build and generated dictionary resolution against the same exact lane. No broader target range is claimed.
+CI has observed generation, build, generated dictionary conformance, provider-native semantic reconciliation and GDS closed-loop behavior for this pair. The Reference Examples exercise both the monolithic and split F Prime placements against the same exact lane. No broader target range is claimed.
 
 ## Version discipline
 

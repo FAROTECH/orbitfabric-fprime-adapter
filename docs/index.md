@@ -12,7 +12,11 @@ Start with [Getting Started](getting-started.md) for the published-release and A
 
 ### I want to try the adapter
 
-Start with the [Reference Example](reference-example.md). It demonstrates one stable OrbitFabric mission contract projected into two different native F Prime placements while keeping upstream source identities unchanged.
+Start with the [Reference Examples](reference-example.md).
+
+The first example demonstrates one stable OrbitFabric mission contract projected into two different native F Prime placements. The second reconciles that explicit projected intent against the provider-native FPP semantic model.
+
+Both examples include a local reproduction path over the exact supported lane.
 
 ### I want to develop or contribute
 
@@ -24,10 +28,26 @@ The operation is `fpp_contract_projection`. Its semantic scope covers telemetry,
 
 The adapter does not infer F Prime architecture from OrbitFabric structure. Target placement is explicit Profile intent, and the generated FPP fragments are composed by an existing F Prime project.
 
+## Repository orientation
+
+```text
+src/
+    adapter product
+
+examples/
+    public executable integration stories
+
+native_acceptance/
+    concrete F Prime materialization and downstream acceptance
+
+docs/
+    user, architecture and contributor documentation
+```
+
 ## Documentation
 
 - [Getting Started](getting-started.md)
-- [Reference Example](reference-example.md)
+- [Reference Examples](reference-example.md)
 - [Product contract](product-contract.md)
 - [F Prime Projection Profile](projection-profile.md)
 - [Core input and result boundary](core-input-and-result.md)

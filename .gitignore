@@ -8,3 +8,10 @@ build/
 *.egg-info/
 site/
 generated/
+
+# Local example and native-acceptance workspaces
+.semantic-reconciliation-work/
+.reference-example-native-work/
+.native-static-work/
+.native-runtime-work/
+_native/

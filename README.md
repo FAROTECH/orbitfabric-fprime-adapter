@@ -39,6 +39,8 @@ same OrbitFabric mission contract
 
 The OrbitFabric source identities stay stable while explicit F Prime component and instance placement evolves. Both layouts are materialized into native F Prime projects and accepted through `fprime-util generate`, `fprime-util build` and generated dictionary verification against the exact supported F Prime lane.
 
+Want to run the complete two-layout F Prime proof yourself? Follow **[Run the full native example locally](examples/reference-contract-evolution/README.md#run-the-full-native-example-locally)**.
+
 **[Reference Example: Provider-Native Semantic Reconciliation](examples/reference-semantic-reconciliation/README.md)** asks a different question: did the provider-native FPP semantic model actually interpret the projected intent as expected?
 
 ```text
@@ -79,6 +81,26 @@ orbitfabric-fprime
 is primarily a contributor and development surface. Normal consumers should use `orbitfabric adapter ...` through Adapter Manager.
 
 Start with **[Development and verification](docs/development.md)**.
+
+## Repository map
+
+The repository separates product code, public integration stories and provider-native acceptance deliberately:
+
+```text
+src/
+    adapter product
+
+examples/
+    public executable integration stories, Profiles and proof logic
+
+native_acceptance/
+    concrete F Prime materialization and downstream acceptance harnesses
+
+docs/
+    user, architecture and contributor documentation
+```
+
+Start with [`examples/`](examples/README.md) if you want to understand or run the public integration stories. See [`native_acceptance/`](native_acceptance/README.md) when you want to understand how those stories are exercised against the real F Prime toolchain.
 
 ## What the adapter does
 
@@ -220,6 +242,8 @@ version                     0.1.1
 ### User
 
 - [Getting Started](docs/getting-started.md)
+- [Reference Examples](docs/reference-example.md)
+- [Examples directory](examples/README.md)
 - [Reference Example: Contract Evolution](examples/reference-contract-evolution/README.md)
 - [Reference Example: Semantic Reconciliation](examples/reference-semantic-reconciliation/README.md)
 - [F Prime Projection Profile](docs/projection-profile.md)
@@ -229,6 +253,7 @@ version                     0.1.1
 ### Developer / Contributor
 
 - [Development and verification](docs/development.md)
+- [Native acceptance orientation](native_acceptance/README.md)
 - [Product contract](docs/product-contract.md)
 - [Architecture and ownership](docs/architecture-and-ownership.md)
 - [Target compatibility](docs/target-compatibility.md)
