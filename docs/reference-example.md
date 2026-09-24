@@ -6,8 +6,8 @@ They use the same OrbitFabric mission contract and explicit F Prime Projection P
 
 | Example | Main question | Evidence |
 | --- | --- | --- |
-| [Contract evolution](https://github.com/FAROTECH/orbitfabric-fprime-adapter/tree/main/examples/reference-contract-evolution) | Can native F Prime architecture evolve while OrbitFabric mission identity stays stable? | consumer proof plus native generate/build/dictionary acceptance |
-| [Semantic reconciliation](https://github.com/FAROTECH/orbitfabric-fprime-adapter/tree/main/examples/reference-semantic-reconciliation) | Did the provider-native FPP semantic model interpret the explicit projected intent as expected? | typed reconciliation against FPP AST, analysis and source-location evidence |
+| [Contract evolution](https://github.com/OrbitFabric/orbitfabric-fprime-adapter/tree/main/examples/reference-contract-evolution) | Can native F Prime architecture evolve while OrbitFabric mission identity stays stable? | consumer proof plus native generate/build/dictionary acceptance |
+| [Semantic reconciliation](https://github.com/OrbitFabric/orbitfabric-fprime-adapter/tree/main/examples/reference-semantic-reconciliation) | Did the provider-native FPP semantic model interpret the explicit projected intent as expected? | typed reconciliation against FPP AST, analysis and source-location evidence |
 
 ## Reference Example 1: contract evolution
 
@@ -21,7 +21,7 @@ The upstream OrbitFabric entity identities remain unchanged. F Prime component a
 
 The full native path materializes both layouts, runs `fprime-util generate`, runs `fprime-util build`, collects generated dictionaries and verifies that provider-resolved identity evolves exactly with the Profiles.
 
-See the [Contract Evolution README](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md) for the detailed layouts and clean local reproduction path.
+See the [Contract Evolution README](https://github.com/OrbitFabric/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md) for the detailed layouts and clean local reproduction path.
 
 ## Reference Example 2: semantic reconciliation
 
@@ -36,7 +36,7 @@ OrbitFabric source identity
 
 This proof checks component and instance placement, local allocations, symbols, packet membership and generated-source provenance through the version-matched `fprime-python-model` API.
 
-See the [Semantic Reconciliation README](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-semantic-reconciliation/README.md) for the clean greenfield path.
+See the [Semantic Reconciliation README](https://github.com/OrbitFabric/orbitfabric-fprime-adapter/blob/main/examples/reference-semantic-reconciliation/README.md) for the clean greenfield path.
 
 ## Repository map
 

@@ -1,122 +1,45 @@
 # Getting Started
 
-This guide is for **users of the adapter**.
+This is the coordinated **unpublished** Core 1.4.0 / GitHub Release Source 0.1.0 / F Prime 0.1.3 candidate. The commands below become public acceptance commands only after approved publication and the exact F Prime descriptor digest is added to the canonical Catalog. No PyPI publication is assumed.
 
-It covers the normal consumer path:
-
-```text
-install OrbitFabric Core
-    -> obtain the published adapter release
-    -> verify the published bytes
-    -> install through Adapter Manager
-    -> verify the installed instance
-    -> generate a Core Integration Input Set
-    -> execute fpp_contract_projection
-```
-
-You do **not** need to install this repository in editable mode, build a wheel or use publisher tooling.
-
-If you want to modify the adapter, use [Development and verification](development.md).
-
-## Release baseline
-
-`v0.1.2` is the current patch-release baseline.
-
-It preserves the F Prime integration behavior established by the `0.1` line while freezing the two public Reference Examples, provider-native semantic reconciliation and their clean local reproduction paths as part of the tagged repository state.
-
-The validated downstream lane remains exact:
-
-| System | Validated baseline |
-| --- | --- |
-| OrbitFabric Core | `4377d6656c62aa1dc19a7ed81d2de872b6b22ccd` |
-| F Prime | `v4.2.2`, commit `8a62e455a90b6d4f498c332d45d65a2a819988d8` |
-| FPP | `3.2.0`, commit `93f484b7521a8e8894cba25b26e633cc87d8e37a` |
-
-No broader F Prime or FPP compatibility range is currently claimed.
-
-## 1. Create a clean consumer environment
+## Install the candidate after approved publication
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-```
-
-For an isolated Adapter Manager state directory:
-
-```bash
-export ORBITFABRIC_STATE_DIR="$PWD/.orbitfabric-state"
-```
-
-## 2. Install the validated OrbitFabric Core baseline
-
-```bash
-python -m pip install \
-  "git+https://github.com/FAROTECH/orbitfabric.git@4377d6656c62aa1dc19a7ed81d2de872b6b22ccd"
-```
-
-Check that Core and Adapter Manager are available:
-
-```bash
-orbitfabric --help
+. .venv/bin/activate
+python -m pip install -r https://github.com/OrbitFabric/orbitfabric/releases/download/v1.4.0/orbitfabric-install.txt
+orbitfabric adapter install fprime --version 0.1.3
 orbitfabric adapter list
+orbitfabric adapter verify <instance-id>
 ```
 
-## 3. Obtain the published adapter release assets
-
-For `v0.1.2`, obtain these exact assets from the matching GitHub Release:
-
-```text
-orbitfabric_fprime_adapter-0.1.2-py3-none-any.whl
-adapter-release.json
-SHA256SUMS
-```
-
-Keep them together in one directory and verify the downloaded bytes:
+The installation manifest names exact Core and GitHub Release Source wheels with SHA-256 URL fragments. Runtime Python dependencies are resolved by pip. Neither repository clones nor Git are required. Adapter descriptor and artifact downloads are automatic. No Project Lock is needed for this path.
 
 ```bash
-sha256sum -c SHA256SUMS
+orbitfabric adapter install orbitfabric/fprime --version 0.1.3
+orbitfabric adapter install github.com/OrbitFabric:orbitfabric/fprime --version 0.1.3
+orbitfabric adapter install fprime --version 0.1.3 --catalog-revision <40-character-commit-sha>
+orbitfabric adapter install fprime --version 0.1.3 --catalog ./catalog.json --json
 ```
 
-A normal consumer should use the published wheel rather than rebuilding it from repository source.
+The default Catalog repository is `OrbitFabric/orbitfabric-adapter-catalog`. Each invocation resolves `main` to an exact commit, fetches `catalog.json` at that commit, validates it and reports repository, revision, path and byte SHA-256. A pinned revision skips mutable-ref resolution. A local snapshot makes no Catalog network request and reports its absolute path and digest. The two overrides are mutually exclusive. There is no persistent cache, refresh timer or fallback to another snapshot.
 
-The GitHub tag and source archive freeze the complete engineering and integration surface for the same release, including Reference Examples, provider-native acceptance harnesses, documentation and CI definitions. Those repository resources remain separate from the minimal installable wheel.
+Logical selection filters by both key and exact version across Catalog records before counting matches. One match succeeds; zero or multiple matches fail closed. Bare names also require uniqueness across publishers. `openc3-cosmos --version 0.2.0` selects `github.com/OrbitFabric:orbitfabric/openc3-cosmos@0.2.0`; historical FAROTECH 0.1.0 is retained without causing ambiguity. There are no authority aliases, preferred authorities, version ranges, latest, stable or automatic upgrades. The full coordinate and exact version remain the installed identity.
 
-## 4. Install through OrbitFabric Adapter Manager
+Core application composition calls `GitHubReleaseSource.resolve(...)`, then `AdapterManager.install_resolved(...)`. The provider verifies the Catalog-bound descriptor digest, exact identity/version and selected artifact digest/size. Core owns acceptance, managed environment installation, inventory and verification. GitHub transport stays outside the lifecycle layer. Only one GitHub Release binding is supported for this command; no provider registry or mirror preference is introduced.
 
-From the directory containing the release assets:
+Remote `--json` output contains `installed` and `catalog_snapshot`. Existing local JSON output remains the installed record. The old explicit path remains available:
 
 ```bash
-orbitfabric adapter install \
-  adapter-release.json \
-  --artifact orbitfabric_fprime_adapter-0.1.2-py3-none-any.whl
+orbitfabric adapter install ./adapter-release.json --artifact ./adapter.whl
 ```
 
-Inspect the installed inventory:
+Project Locks remain exact reproducible project desired state. Existing ensure MATCH returns NOOP without acquisition. Snapshot provenance describes Catalog bytes; it does not turn Catalog membership into publisher authentication.
 
-```bash
-orbitfabric adapter list
-orbitfabric adapter list --json
-```
 
-Record the returned instance ID:
+## Execution with reference inputs
 
-```bash
-export ORBITFABRIC_ADAPTER_INSTANCE_ID=<instance-id>
-```
-
-Verify the managed installation:
-
-```bash
-orbitfabric adapter inspect "$ORBITFABRIC_ADAPTER_INSTANCE_ID"
-orbitfabric adapter verify "$ORBITFABRIC_ADAPTER_INSTANCE_ID"
-```
-
-A valid installation must finish with:
-
-```text
-Result: PASSED
-```
+The following execution guidance preserves the validated downstream F Prime/FPP baseline.
 
 ## 5. Produce a Core Integration Input Set
 

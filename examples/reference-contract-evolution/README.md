@@ -191,8 +191,8 @@ Java 11 JDK with java available on PATH
 mkdir orbitfabric-fprime-contract-greenfield
 cd orbitfabric-fprime-contract-greenfield
 
-git clone https://github.com/FAROTECH/orbitfabric-fprime-adapter.git adapter
-git clone https://github.com/FAROTECH/orbitfabric.git core
+git clone https://github.com/OrbitFabric/orbitfabric-fprime-adapter.git adapter
+git clone https://github.com/OrbitFabric/orbitfabric.git core
 git clone --recursive https://github.com/nasa/fprime.git fprime
 git clone https://github.com/nasa/fpp.git fpp
 

@@ -183,10 +183,10 @@ Java 11 JDK with java available on PATH
 mkdir orbitfabric-fprime-semantic-greenfield
 cd orbitfabric-fprime-semantic-greenfield
 
-git clone https://github.com/FAROTECH/orbitfabric-fprime-adapter.git adapter
+git clone https://github.com/OrbitFabric/orbitfabric-fprime-adapter.git adapter
 git -C adapter checkout v0.1.2
 
-git clone https://github.com/FAROTECH/orbitfabric.git core
+git clone https://github.com/OrbitFabric/orbitfabric.git core
 git -C core checkout 4377d6656c62aa1dc19a7ed81d2de872b6b22ccd
 
 git clone --recursive https://github.com/nasa/fprime.git fprime
