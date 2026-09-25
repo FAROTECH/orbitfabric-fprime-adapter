@@ -1,5 +1,7 @@
 # OrbitFabric F Prime Adapter
 
+Candidate `0.1.3` is unpublished and awaits review. See [candidate release notes](docs/releases/0.1.3.md). New releases use the canonical `github.com/OrbitFabric` authority.
+
 `orbitfabric-fprime-adapter` connects OrbitFabric mission contracts to native F Prime (F') projects.
 
 The adapter projects explicit OrbitFabric contract entities into FPP declaration fragments while preserving F Prime ownership of component architecture, instances, topology, scheduling and runtime behavior.
@@ -63,7 +65,7 @@ Together the examples show both architectural decoupling and provider-native tra
 Clone the repository and use the development environment:
 
 ```bash
-git clone https://github.com/FAROTECH/orbitfabric-fprime-adapter.git
+git clone https://github.com/OrbitFabric/orbitfabric-fprime-adapter.git
 cd orbitfabric-fprime-adapter
 
 python3 -m venv .venv
@@ -233,7 +235,7 @@ Python package              orbitfabric_fprime_adapter
 console command             orbitfabric-fprime
 adapter / integration id    orbitfabric-fprime
 logical key                 orbitfabric/fprime
-source coordinate           github.com/FAROTECH:orbitfabric/fprime
+source coordinate           github.com/OrbitFabric:orbitfabric/fprime
 version                     0.1.2
 ```
 

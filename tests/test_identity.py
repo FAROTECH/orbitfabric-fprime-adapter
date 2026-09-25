@@ -28,7 +28,7 @@ def test_canonical_identity() -> None:
     assert INTEGRATION_ID == "orbitfabric-fprime"
     assert OPERATION_ID == "fpp_contract_projection"
     assert SOURCE_COORDINATE == {
-        "authority": "github.com/FAROTECH",
+        "authority": "github.com/OrbitFabric",
         "publisher": "orbitfabric",
         "name": "fprime",
     }

@@ -57,8 +57,8 @@ These layers are not interchangeable. Core conformance does not imply F Prime co
 
 The repository exposes two bounded local paths for users who want to reproduce the public integration evidence:
 
-- [Contract Evolution Reference Example](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md), including the full native `run_native.sh` path;
-- [Semantic Reconciliation Reference Example](https://github.com/FAROTECH/orbitfabric-fprime-adapter/blob/main/examples/reference-semantic-reconciliation/README.md), including the clean FPP semantic greenfield path.
+- [Contract Evolution Reference Example](https://github.com/OrbitFabric/orbitfabric-fprime-adapter/blob/main/examples/reference-contract-evolution/README.md), including the full native `run_native.sh` path;
+- [Semantic Reconciliation Reference Example](https://github.com/OrbitFabric/orbitfabric-fprime-adapter/blob/main/examples/reference-semantic-reconciliation/README.md), including the clean FPP semantic greenfield path.
 
 The default local workspaces used by these examples and native harnesses are ignored by Git so running a supported example does not dirty the checkout.
 
